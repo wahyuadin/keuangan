@@ -11,12 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kategoris', function (Blueprint $table) {
+        Schema::create('clinics', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('kategori')->unique();
+            $table->foreignUuid('branch_id')->nullable()->constrained('branchoffices')->nullOnDelete();
+            $table->string('nama_klinik');
+            $table->text('alamat');
+            $table->string('kota');
+            $table->string('penetapan_rkap')->nullable();
             $table->text('create_by')->nullable();
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kategoris');
+        Schema::dropIfExists('clinics');
     }
 };

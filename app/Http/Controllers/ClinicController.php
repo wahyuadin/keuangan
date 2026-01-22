@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kategori;
-use App\Services\KategoriService;
+use App\Models\Clinic;
+use App\Services\KlinikService;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
-class KategoriController extends Controller
+class ClinicController extends Controller
 {
-    protected $kategori;
+    protected $klinik;
 
-    public function __construct(KategoriService $kategori)
+    public function __construct(KlinikService $klinik)
     {
-        $this->kategori = $kategori;
+        $this->klinik = $klinik;
     }
 
     public function index()
     {
-        return view('kategori.index', ['data' => Kategori::showData()]);
+        return view('clinic.index', [
+            'data' => Clinic::showData(),
+        ]);
     }
 
     /**
@@ -34,17 +35,7 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'kategori' => [
-                'required',
-                Rule::unique('kategoris', 'kategori')->whereNull('deleted_at'),
-            ],
-        ], [
-            'kategori.required' => 'Nama Kategori wajib diisi.',
-            'kategori.unique' => 'Nama Kategori sudah ada di database.',
-        ]);
-
-        return $this->kategori->tambah($request);
+        return $this->klinik->tambah($request);
     }
 
     /**
@@ -52,7 +43,7 @@ class KategoriController extends Controller
      */
     public function show(string $id)
     {
-        return Kategori::showData($id);
+        return Clinic::showData($id);
     }
 
     /**
@@ -68,7 +59,7 @@ class KategoriController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return $this->kategori->edit($id, $request);
+        return $this->klinik->edit($id, $request);
     }
 
     /**
@@ -76,6 +67,6 @@ class KategoriController extends Controller
      */
     public function destroy(string $id)
     {
-        return $this->kategori->hapus($id);
+        return $this->klinik->hapus($id);
     }
 }

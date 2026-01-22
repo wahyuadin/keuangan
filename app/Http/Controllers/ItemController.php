@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Services\ItemService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ItemController extends Controller
 {
@@ -33,6 +34,17 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
+
+        $this->validate($request, [
+            'item' => [
+                'required',
+                Rule::unique('items', 'item')->whereNull('deleted_at'),
+            ],
+        ], [
+            'item.required' => 'Nama Item wajib diisi.',
+            'item.unique' => 'Nama Item sudah ada di database.',
+        ]);
+
         return $this->item->tambah($request);
     }
 

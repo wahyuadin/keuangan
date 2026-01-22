@@ -11,14 +11,16 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-6 col-md-8">
-                    <h5 class="card-title">Data Daftar Item</h5>
+                    <h5 class="card-title">Data Daftar Klinik</h5>
                 </div>
             </div>
             <div class="table-responsive mt-3">
                 <div class="mt-3 mb-4">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItem">
+                    @if(Auth::user()->role == '2')
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClinic">
                         <i class='bx bx-plus'></i>
                     </button>
+                    @endif
                     <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class='bx bx-export'></i>
                     </button>
@@ -37,41 +39,48 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Klinik</th>
                             <th>Branch Office</th>
-                            <th>Item</th>
-                            <th>Kategori</th>
-                            <th>Kategori</th>
-                            <th>Update By</th>
-                            <th>Created At</th>
+                            <th>Nama</th>
+                            <th>Alamat</th>
+                            <th>Kota</th>
+                            <th>Penetapan RKAP</th>
+                            <th>Updated By</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data as $index => $dataItem)
                         <tr>
-                            {{-- @dump($dataItem->klinik) --}}
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ Str::upper($dataItem->klinik->nama_klinik ?? '-') }}</td>
-                            <td>{{ Str::upper($dataItem->klinik->branch->nama_branch ?? '-') }}</td>
-                            <td>{{ Str::upper($dataItem->item ?? '-') }}</td>
-                            <td>{{ Str::upper($dataItem->item ?? '-') }}</td>
-                            <td>{{ Str::upper($dataItem->kategori->kategori ?? '-') }}</td>
+                            <td>{{ Str::upper($dataItem->branch->nama_branch ?? '-') }}</td>
+                            <td>{{ Str::upper($dataItem->nama_klinik ?? '-') }}</td>
+                            <td>{{ Str::upper($dataItem->alamat ?? '-') }}</td>
+                            <td>{{ Str::upper($dataItem->kota ?? '-') }}</td>
+                            <td>{{ 'Rp ' . number_format($dataItem->penetapan_rkap ?? 0, 0, ',', '.') }}</td>
                             @php
-                            $user = \App\Models\User::where('id', $dataItem->create_by)->first();
+                            $user =\App\Models\User::where('id' , $dataItem->create_by)->first();
                             @endphp
-                            <td>{{ Str::upper($user->nama ?? '-') }}</td>
-                            <td>{{ Str::upper($dataItem->updated_at ?? '-') }}</td>
+                            <td>{{ Str::upper($user->nama ?? '-') ?? '-' }}</td>
                             @if(Auth::user()->role == '2')
                             <td>
                                 <div class="d-flex gap-1">
-                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editItem{{ $dataItem->id }}">
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editclinic{{ $dataItem->id }}">
                                         Edit
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteItem{{ $dataItem->id }}">
+                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteclinic{{ $dataItem->id }}">
                                         Delete
                                     </button>
                                 </div>
+                            </td>
+                            @else
+                            <td>
+                                @if(Auth::user()->clinic_id == $dataItem->id)
+                                <div class="d-flex gap-1">
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editclinic{{ $dataItem->id }}">
+                                        Edit
+                                    </button>
+                                </div>
+                                @endif
                             </td>
                             @endif
                         </tr>
@@ -82,9 +91,9 @@
         </div>
     </div>
 </div>
-@include('item.modal.add')
-@include('item.modal.edit')
-@include('item.modal.delete')
+@include('clinic.modal.add')
+@include('clinic.modal.edit')
+@include('clinic.modal.delete')
 @push('style')
 {{-- datatable --}}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.6/css/dataTables.bootstrap5.css">

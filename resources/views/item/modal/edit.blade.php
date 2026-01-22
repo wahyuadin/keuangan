@@ -13,10 +13,6 @@
 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="item" class="form-label">Item <span class="text-danger">*</span></label>
-                        <input type="text" name="item" id="item" class="form-control" value="{{ $dataEdit->item }}" placeholder="Masukkan nama item" required>
-                    </div>
-                    <div class="mb-3">
                         <label for="kategori_id" class="form-label">Kategori</label>
                         <select name="kategori_id" id="kategori_id" class="form-select">
                             @php
@@ -26,6 +22,22 @@
                             <option value="{{ $kategoris->id }}" {{ $dataEdit->kategori_id == $kategoris->id ? 'selected' : '' }}>{{ $kategoris->kategori }}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="clinic_id" class="form-label">Klinik</label>
+                        <select name="clinic_id" id="clinic_id" class="form-select">
+                            @php
+                            $klinik = \App\Models\Clinic::select('id', 'nama_klinik')->get();
+                            @endphp
+                            <option>== Pilih Klinik == </option>
+                            @foreach ($klinik as $kliniks)
+                            <option value="{{ $kliniks->id }}" {{ $dataEdit->clinic_id == $kliniks->id ? 'selected' : '' }}>{{ $kliniks->nama_klinik }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="item" class="form-label">Item <span class="text-danger">*</span></label>
+                        <input type="text" name="item" id="item" class="form-control" value="{{ $dataEdit->item }}" placeholder="Masukkan nama item" required>
                     </div>
                 </div>
 

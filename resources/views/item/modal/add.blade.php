@@ -9,10 +9,21 @@
                 </div>
 
                 <div class="modal-body">
-                    <!-- Nama item -->
                     <div class="mb-3">
-                        <label for="item" class="form-label">Item <span class="text-danger">*</span></label>
-                        <input type="text" name="item" id="item" class="form-control" placeholder="Masukkan Nama Item" required value="{{ old('item') }}">
+                        <label for="Klinik" class="form-label">Klinik</label>
+                        <select name="clinic_id" id="clinic_id" class="form-control select2">
+                            <option value="">Pilih Klinik</option>
+                            @php
+                            $klinik = \App\Models\Clinic::showData();
+                            @endphp
+                            @foreach ($klinik as $item)
+                            <option value="{{ $item->id }}" data-branch="{{ $item->branch->id ?? '' }}">
+                                {{ Str::upper($item->nama_klinik) }} - {{ $item->branch->nama_branch ?? '-' }}
+                            </option>
+                            @endforeach
+                        </select>
+
+                        <input name="secure" id="secure">
                     </div>
 
                     <!-- kategori -->
@@ -28,6 +39,11 @@
                             @endforeach
                         </select>
                     </div>
+                    <!-- Nama item -->
+                    <div class="mb-3">
+                        <label for="item" class="form-label">Item <span class="text-danger">*</span></label>
+                        <input type="text" name="item" id="item" class="form-control" placeholder="Masukkan Nama Item" required value="{{ old('item') }}">
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -38,3 +54,15 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#clinic_id').on('change', function() {
+            var seCure = $(this).find(':selected').data('branch');
+            $('#secure').val(seCure);
+        });
+    });
+
+</script>
+@endpush

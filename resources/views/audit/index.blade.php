@@ -131,7 +131,7 @@
         processing: true
         , serverSide: false
         , lengthMenu: [1, 3, 5, 10, 25, 50, 100]
-        , pageLength: 1
+        , pageLength: 10
     });
 
     $('.select2').each(function() {

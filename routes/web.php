@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\ClinicController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\KategoriController;
@@ -15,6 +16,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('kategori', KategoriController::class);
         Route::resource('item', ItemController::class);
         Route::resource('branch-office', BranchController::class);
+        Route::resource('clinic', ClinicController::class);
         Route::resource('rkap', RkapController::class);
         Route::resource('user-data', UserDataController::class);
     });

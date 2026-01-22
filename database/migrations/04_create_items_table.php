@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('kategori_id')->nullable()->constrained('kategoris')->nullOnDelete();
-            $table->string('item')->unique();
+            $table->foreignUuid('clinic_id')->nullable()->constrained('clinics')->nullOnDelete();
+            $table->string('item');
             $table->text('create_by')->nullable();
             $table->softDeletes();
             $table->timestamps();

@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use OwenIt\Auditing\Auditable as AuditingAuditable;
 use OwenIt\Auditing\Contracts\Auditable;
 
 class Report extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes, AuditingAuditable, HasUuids;
+    use AuditingAuditable, HasFactory, HasUuids, SoftDeletes;
+
     protected $guarded = [];
+
     protected $auditEvents = [
         'created',
         'updated',
@@ -20,9 +22,29 @@ class Report extends Model implements Auditable
         'restored',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function clinic()
+    {
+        return $this->belongsTo(Clinic::class, 'clinic_id', 'id');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class, 'item_id', 'id');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branchoffice::class, 'branch_id', 'id');
+    }
+
     public static function showData($id = null)
     {
-        return $id ? self::find($id)->first() : self::latest()->get();
+        return $id ? self::find($id)->with('user', 'clinic', 'branch', 'item')->first() : self::latest()->with('user', 'clinic.branch', 'branch', 'item')->get();
     }
 
     public static function tambahData($data)
@@ -35,6 +57,7 @@ class Report extends Model implements Auditable
         $report = self::findOrFail($id);
         $report->fill($data);
         $report->save();
+
         return $report;
     }
 
@@ -42,6 +65,7 @@ class Report extends Model implements Auditable
     {
         $report = self::findOrFail($id);
         $report->delete();
+
         return $report;
     }
 }

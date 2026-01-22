@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Auditable as AuditingAuditable;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class Item extends Model implements Auditable
+class Clinic extends Model implements Auditable
 {
-    use AuditingAuditable, HasFactory, HasUuids, SoftDeletes;
+    use AuditingAuditable, HasFactory, HasUuids, SoftDeletes, SoftDeletes;
 
     protected $guarded = [];
 
@@ -22,19 +22,14 @@ class Item extends Model implements Auditable
         'restored',
     ];
 
-    public function kategori()
+    public function branch()
     {
-        return $this->belongsTo(Kategori::class, 'kategori_id', 'id');
-    }
-
-    public function klinik()
-    {
-        return $this->belongsTo(Clinic::class, 'clinic_id', 'id');
+        return $this->belongsTo(Branchoffice::class, 'branch_id');
     }
 
     public static function showData($id = null)
     {
-        return $id ? self::find($id)->with('kategori', 'klinik')->first() : self::with('kategori', 'klinik')->latest()->get();
+        return $id ? self::find($id)->with('branch')->first() : self::with('branch')->latest()->get();
     }
 
     public static function tambahData($data)
@@ -44,18 +39,18 @@ class Item extends Model implements Auditable
 
     public static function editData($id, $data)
     {
-        $item = self::findOrFail($id);
-        $item->fill($data);
-        $item->save();
+        $branch = self::findOrFail($id);
+        $branch->fill($data);
+        $branch->save();
 
-        return $item;
+        return $branch;
     }
 
     public static function hapusData($id)
     {
-        $item = self::findOrFail($id);
-        $item->delete();
+        $branch = self::findOrFail($id);
+        $branch->delete();
 
-        return $item;
+        return $branch;
     }
 }

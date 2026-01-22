@@ -31,16 +31,22 @@
                 <div data-i18n="item">Item</div>
             </a>
         </li>
-        <li class="menu-item {{ Request::is('master/rkap*') ? 'active' : '' }}">
+        {{-- <li class="menu-item {{ Request::is('master/rkap*') ? 'active' : '' }}">
             <a href="{{ route('rkap.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons fa-solid fa-calculator"></i>
                 <div data-i18n="item">Penetapan RKAP</div>
             </a>
-        </li>
+        </li> --}}
         <li class="menu-item {{ Request::is('master/branch-office*') ? 'active' : '' }}">
             <a href="{{ route('branch-office.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons fa-solid fa-code-branch"></i>
                 <div data-i18n="Analytics">Branch Office</div>
+            </a>
+        </li>
+        <li class="menu-item {{ Request::is('master/clinic*') ? 'active' : '' }}">
+            <a href="{{ route('clinic.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons fa-solid fa-hospital"></i>
+                <div data-i18n="Klinik">Klinik</div>
             </a>
         </li>
         <li class="menu-item {{ Request::is('master/user*') ? 'active' : '' }}">
@@ -55,7 +61,7 @@
         <li class="menu-item {{ Request::is('/') ? 'active' : '' }}">
             <a href="{{ route('index') }}" class="menu-link">
                 <i class="menu-icon tf-icons fa-solid fa-file-lines"></i>
-                <div data-i18n="Analytics">Report</div>
+                <div data-i18n="Analytics">Konsolidasi</div>
             </a>
         </li>
     </ul>

@@ -1,5 +1,5 @@
 @foreach ($data as $dataDelete)
-<div class="modal fade" id="deleteItem{{ $dataDelete->id }}" tabindex="-1" aria-labelledby="deleteItem{{ $dataDelete->id }}Label" aria-hidden="true">
+<div class="modal fade" id="deleteclinic{{ $dataDelete->id }}" tabindex="-1" aria-labelledby="delete{{ $dataDelete->id }}Label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body text-center p-4">
@@ -8,13 +8,13 @@
                 <p class="text-muted">
                     Anda akan menghapus data:<br>
                     <strong class="text-dark">
-                        Item {{ $dataDelete->item }}</strong>.
+                        Clinic {{ $dataDelete->nama_klinik }}</strong>.
                     <br>Tindakan ini tidak dapat dibatalkan.
                 </p>
 
                 <div class="d-flex justify-content-center mt-4">
                     <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                    <form action="{{ route('item.destroy', $dataDelete->id) }}" method="POST" class="d-inline">
+                    <form action="{{ route('clinic.destroy', $dataDelete->id) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger">Ya, Hapus</button>

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Branchoffice;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class BranchOfficeSeeder extends Seeder
@@ -49,6 +48,10 @@ class BranchOfficeSeeder extends Seeder
             [
                 'nama_branch' => 'Branch Office Semarang',
                 'alamat' => 'Jl. Rorojonggrang III, No. 1B, RT. 08 RW.10 Kel. Manyaran, Kec. Semarang Barat, Kota Semarang, Jawa Tengah.',
+            ],
+            [
+                'nama_branch' => 'Branch Office Surabaya',
+                'alamat' => 'Jl. Gayungsari Tim. VII MGM 5-6 No.10, Menanggal, Kec. Gayungan, Kota SBY, Jawa Timur 60234.',
             ],
         ];
 
