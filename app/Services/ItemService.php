@@ -13,7 +13,7 @@ class ItemService
     {
         DB::beginTransaction();
         try {
-            $data = $request->except('_method', '_token');
+            $data = $request->except('_method', '_token', 'secure');
             $data['create_by'] = Auth::id();
 
             $item = Item::tambahData($data);
@@ -23,9 +23,8 @@ class ItemService
                 'item_id' => $item->id,
                 'branch_id' => $request->secure,
                 'tahun' => now()->format('Y'),
-                'create_by' => Auth::id(),
+                'create_by' => Auth::user()->id,
             ]);
-
             DB::commit();
             toastify()->success('Data Berhasil Ditambahkan.');
 
@@ -33,7 +32,7 @@ class ItemService
         } catch (\Throwable $th) {
             DB::rollBack();
 
-            toastify()->error('Error, '.$th->getMessage());
+            toastify()->error('Error, ' . $th->getMessage());
 
             return redirect()->back();
         }
@@ -51,7 +50,7 @@ class ItemService
 
             return redirect()->route('item.index');
         } catch (\Throwable $th) {
-            toastify()->error('Error, '.$th);
+            toastify()->error('Error, ' . $th);
             DB::rollback();
 
             return redirect()->back();
@@ -68,7 +67,7 @@ class ItemService
 
             return redirect()->route('item.index');
         } catch (\Throwable $th) {
-            toastify()->error('Error, '.$th);
+            toastify()->error('Error, ' . $th);
 
             return redirect()->back();
             DB::rollback();

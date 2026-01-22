@@ -20,7 +20,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('rkap', RkapController::class);
         Route::resource('user-data', UserDataController::class);
     });
-    Route::resource('/', ReportController::class);
+    Route::resource('report', ReportController::class);
     Route::get('audit', [Controller::class, 'auditable'])->name('audit');
 });
 Route::resource('login', LoginController::class);

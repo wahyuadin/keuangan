@@ -267,7 +267,6 @@
 @include('report.modal.add')
 @include('report.modal.edit')
 @include('report.modal.verif')
-{{-- @include('report.modal.input_saldo_modal') Pastikan nama file include sesuai --}}
 @include('report.modal.delete')
 @push('style')
 {{-- datatable --}}
@@ -370,139 +369,49 @@
     function exportExcel() {
         document.getElementById('loading-overlay').classList.remove('d-none');
 
-        // 1. Definisikan Header Row Pertama (Judul Utama) dan Row Kedua (Sub-judul)
-        // Header 1: No, Branch, Tahun, Kategori, Item, Status, [Bulan-bulan...], Total..., Meta...
-        let header1 = ["No", "Branch Office", "Tahun", "Kategori", "Item", "Status/Penetapan RKAP"];
-        let header2 = ["", "", "", "", "", ""]; // Placeholder untuk kolom yang di-merge vertikal
-
-        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        // Sub-kolom untuk setiap bulan
-        const subHeaders = ["Anggaran", "Verif By", "Selisih", "Keterangan"];
-
-        // Loop untuk membuat header bulan
-        months.forEach(m => {
-            header1.push(m); // Judul Bulan
-            header1.push("", "", ""); // 3 kolom kosong untuk di-merge (karena total 4 kolom per bulan)
-            header2.push(...subHeaders); // Sub-header: Anggaran, Verif, Selisih, Ket
+        // Ambil header
+        let headers = [];
+        $('#example thead th').each(function(index) {
+            if (index < 4) {
+                headers.push($(this).text().trim());
+            }
         });
 
-        // Header bagian akhir (Totals & Meta)
-        const tailHeaders = ["Total Saldo", "Total Selisih", "Created By", "Created At"];
-        header1.push(...tailHeaders);
-        header2.push("", "", "", ""); // Placeholder merge vertikal
-
-        // 2. Ambil Data dari Tabel HTML
-        let dataRows = [];
+        // Ambil data dari DOM
+        let data = [];
         $('#example tbody tr:visible').each(function() {
-            let row = [];
-            $(this).find('td').each(function(index, td) {
-                // Kecuali kolom terakhir (Action)
-                // Total kolom HTML: 6 (info) + 48 (12*4) + 4 (total/meta) + 1 (action) = 59 kolom
-                // Kita ambil index 0 s/d 57
-                if (index < 58) {
-                    row.push(td.innerText.trim());
+            let rowData = [];
+            $(this).find('td').each(function(index) {
+                if (index < 4) {
+                    let text = $(this).text().trim();
+                    rowData.push(ucwordsJS(text));
                 }
             });
-            dataRows.push(row);
+            data.push(rowData);
         });
 
-        // 3. Tambahkan Baris Footer (Total Keseluruhan)
-        // Kita perlu menyusun baris footer secara manual agar sesuai dengan struktur kolom Excel
-        $('#example tfoot tr').each(function() {
-            let row = new Array(header1.length).fill("");
-
-            // Kolom pertama diisi label
-            row[0] = "Total Keseluruhan";
-
-            // Ambil nilai Total Saldo dan Total Selisih dari footer HTML
-            // Di HTML footer: td eq(0) adalah colspan="54", eq(1) Total Saldo, eq(2) Total Selisih
-            let saldo = $(this).find('td').eq(1).text().trim();
-            let selisih = $(this).find('td').eq(2).text().trim();
-
-            // Posisi kolom Total Saldo ada di index 54 (6 + 48)
-            row[54] = saldo;
-            // Posisi kolom Total Selisih ada di index 55
-            row[55] = selisih;
-
-            dataRows.push(row);
-        });
-
-        // 4. Gabungkan Header dan Data
-        let ws_data = [header1, header2, ...dataRows];
-
-        // 5. Buat Workbook dan Worksheet
-        let wb = XLSX.utils.book_new();
+        let ws_data = [headers, ...data];
         let ws = XLSX.utils.aoa_to_sheet(ws_data);
 
-        // 6. Konfigurasi Merge Cells (Penggabungan Sel)
-        let merges = [];
-
-        // a. Merge Header Utama Vertikal (No, Branch, dll) - Baris 0 dan 1
-        for (let c = 0; c < 6; c++) {
-            merges.push({
-                s: {
-                    r: 0
-                    , c: c
-                }
-                , e: {
-                    r: 1
-                    , c: c
+        // Hitung lebar kolom
+        let colWidths = ws_data[0].map((_, colIndex) => {
+            let maxWidth = 10;
+            ws_data.forEach(row => {
+                let cell = row[colIndex];
+                if (cell && cell.length > maxWidth) {
+                    maxWidth = cell.length;
                 }
             });
-        }
-
-        // b. Merge Header Bulan Horizontal (Januari, Februari, dll)
-        for (let m = 0; m < 12; m++) {
-            let startCol = 6 + (m * 4); // Dimulai setelah 6 kolom pertama
-            merges.push({
-                s: {
-                    r: 0
-                    , c: startCol
-                }
-                , e: {
-                    r: 0
-                    , c: startCol + 3
-                }
-            });
-        }
-
-        // c. Merge Header Akhir Vertikal (Totals, Meta)
-        for (let c = 0; c < 4; c++) {
-            let col = 6 + 48 + c; // Dimulai setelah kolom bulan
-            merges.push({
-                s: {
-                    r: 0
-                    , c: col
-                }
-                , e: {
-                    r: 1
-                    , c: col
-                }
-            });
-        }
-
-        // d. Merge Footer Row "Total Keseluruhan"
-        // Footer ada di baris terakhir (2 baris header + jumlah data)
-        let footerRowIndex = 2 + dataRows.length - 1;
-        // Merge dari kolom 0 sampai kolom 53 (sebelum kolom Total Saldo)
-        merges.push({
-            s: {
-                r: footerRowIndex
-                , c: 0
-            }
-            , e: {
-                r: footerRowIndex
-                , c: 53
-            }
+            return {
+                wch: maxWidth + 2
+            };
         });
+        ws['!cols'] = colWidths;
 
-        // Terapkan merges ke worksheet
-        ws['!merges'] = merges;
+        let wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Kategori");
 
-        // 7. Simpan File
-        XLSX.utils.book_append_sheet(wb, ws, "Laporan RKAP");
-        XLSX.writeFile(wb, "Laporan_RKAP_Lengkap.xlsx");
-
+        XLSX.writeFile(wb, "Kategori.xlsx");
         document.getElementById('loading-overlay').classList.add('d-none');
     }
 

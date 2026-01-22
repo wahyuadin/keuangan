@@ -32,9 +32,14 @@ class Item extends Model implements Auditable
         return $this->belongsTo(Clinic::class, 'clinic_id', 'id');
     }
 
+    public function branch()
+    {
+        return $this->belongsTo(BranchOffice::class, 'branch_id', 'id');
+    }
+
     public static function showData($id = null)
     {
-        return $id ? self::find($id)->with('kategori', 'klinik')->first() : self::with('kategori', 'klinik')->latest()->get();
+        return $id ? self::find($id)->with('kategori', 'klinik', 'branch')->first() : self::with('kategori', 'klinik', 'branch')->latest()->get();
     }
 
     public static function tambahData($data)

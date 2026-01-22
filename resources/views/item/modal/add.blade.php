@@ -23,7 +23,7 @@
                             @endforeach
                         </select>
 
-                        <input name="secure" id="secure">
+                        <input name="secure" id="secure" hidden>
                     </div>
 
                     <!-- kategori -->

@@ -47,7 +47,7 @@ class LoginController extends Controller
                 return redirect(route('login.index'));
             }
             toastify()->success('Selamat Datang, ' . auth()->user()->nama);
-            return redirect()->route('index');
+            return redirect()->route('report.index');
         } else {
             toastify()->error('Username atau Password yang anda masukkan salah');
             return redirect()->back();

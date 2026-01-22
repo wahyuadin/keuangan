@@ -57,6 +57,7 @@ class ReportController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // dd($request->all());
         return $this->report->edit($id, $request);
     }
 

@@ -32,10 +32,10 @@
             </a>
         </li>
         {{-- <li class="menu-item {{ Request::is('master/rkap*') ? 'active' : '' }}">
-            <a href="{{ route('rkap.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons fa-solid fa-calculator"></i>
-                <div data-i18n="item">Penetapan RKAP</div>
-            </a>
+        <a href="{{ route('rkap.index') }}" class="menu-link">
+            <i class="menu-icon tf-icons fa-solid fa-calculator"></i>
+            <div data-i18n="item">Penetapan RKAP</div>
+        </a>
         </li> --}}
         <li class="menu-item {{ Request::is('master/branch-office*') ? 'active' : '' }}">
             <a href="{{ route('branch-office.index') }}" class="menu-link">
@@ -58,8 +58,8 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">On Board</span>
         </li>
-        <li class="menu-item {{ Request::is('/') ? 'active' : '' }}">
-            <a href="{{ route('index') }}" class="menu-link">
+        <li class="menu-item {{ Request::is('report') ? 'active' : '' }}">
+            <a href="{{ route('report.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons fa-solid fa-file-lines"></i>
                 <div data-i18n="Analytics">Konsolidasi</div>
             </a>
