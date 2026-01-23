@@ -25,3 +25,6 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::resource('login', LoginController::class);
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/', function () {
+    return redirect()->route('login.index');
+});

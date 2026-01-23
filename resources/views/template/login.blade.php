@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | {{ config('app.name') }}</title>
-    <meta name="description" content="Netsian Komputer - PT. Nayaka Era Husada" />
+    <meta name="description" content="NetsinCode - PT. Nayaka Era Husada" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="https://vectorez.biz.id/wp-content/uploads/2024/05/Logo-Nayaka-Era-Husada@0.5x.png" />

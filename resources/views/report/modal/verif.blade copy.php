@@ -54,36 +54,29 @@
 
                         <!-- HEADER TABLE (Hanya muncul di Desktop) -->
                         <div class="d-none d-md-flex row mx-0 bg-light border-bottom sticky-top py-3 px-3 fw-bold text-secondary small text-uppercase" style="z-index: 10;">
-                            <div class="col-md-2">Bulan</div>
-                            <div class="col-md-2 text-end">RKAP (Anggaran)</div>
-                            <div class="col-md-2 ps-4">Realisasi (Keuangan)</div>
-                            <div class="col-md-2 text-end">Selisih (Otomatis)</div>
-                            <div class="col-md-3 ps-4">Keterangan</div>
+                            <div class="col-md-3">Bulan & Status</div>
+                            <div class="col-md-2 text-end">Nominal</div>
+                            <div class="col-md-3 ps-4">Input Selisih</div>
+                            <div class="col-md-3">Keterangan</div>
                             <div class="col-md-1 text-center">Verif</div>
                         </div>
 
-                        <!-- LOOP DATA -->
+                        <!-- LOOP DATA (Responsive Grid: Row di Desktop, Stack di Mobile) -->
                         @foreach ($months as $month)
                         @php
                         $verif_by_col = $month . '_verif_by';
-                        $selisih_col = $month . '_selisih'; // NOTE: Kolom ini menyimpan NILAI REALISASI
+                        $selisih_col = $month . '_selisih';
                         $ket_col = $month . '_keterangan';
                         $rkap_col = $month;
-
                         $isVerified = !empty($dataVerif->$verif_by_col);
                         $verifierName = $dataVerif->$verif_by_col ?? '-';
-
-                        // Ambil nilai RKAP dan Realisasi dari DB
-                        // Pastikan cleaning data jika ada format string
-                        $rkapValue = preg_replace('/[^0-9]/', '', $dataVerif->$rkap_col ?? 0);
-                        $realisasiValue = preg_replace('/[^0-9]/', '', $dataVerif->$selisih_col ?? 0);
                         @endphp
 
-                        <!-- Wrapper Item dengan data-rkap untuk perhitungan JS -->
-                        <div class="row mx-0 border-bottom py-3 px-3 align-items-center bg-white hover-bg-light data-row" data-rkap="{{ $rkapValue }}">
+                        <!-- Wrapper Item -->
+                        <div class="row mx-0 border-bottom py-3 px-3 align-items-center bg-white hover-bg-light">
 
                             <!-- Kolom 1: Bulan & Status -->
-                            <div class="col-12 col-md-2 mb-2 mb-md-0">
+                            <div class="col-12 col-md-3 mb-2 mb-md-0">
                                 <div class="d-flex justify-content-between align-items-center d-md-block">
                                     <div class="fw-bold text-capitalize text-dark d-flex align-items-center">
                                         <!-- Icon Bulat hanya di Mobile -->
@@ -93,7 +86,7 @@
                                         {{ $month }}
                                     </div>
 
-                                    <!-- Status Mobile -->
+                                    <!-- Status Mobile (di kanan bulan) -->
                                     @if($isVerified)
                                     <div class="d-md-none badge bg-success bg-opacity-10 text-success border border-success-subtle rounded-pill">
                                         <i class='bx bx-check-double'></i> {{ Str::limit($verifierName, 8) }}
@@ -101,7 +94,7 @@
                                     @endif
                                 </div>
 
-                                <!-- Status Desktop -->
+                                <!-- Status Desktop (di bawah bulan) -->
                                 <div class="d-none d-md-block mt-1">
                                     @if($isVerified)
                                     <div class="text-success small d-flex align-items-center">
@@ -116,44 +109,34 @@
 
                             <!-- Kolom 2: RKAP -->
                             <div class="col-6 col-md-2 mb-2 mb-md-0 text-md-end">
-                                <small class="d-md-none text-muted fw-bold x-small d-block mb-1">RKAP</small>
+                                <small class="d-md-none text-muted fw-bold x-small d-block mb-1">NILAI RKAP</small>
                                 <span class="font-monospace text-secondary fw-semibold">
-                                    Rp {{ number_format((float)$rkapValue, 0, ',', '.') }}
+                                    Rp. {{ number_format($dataVerif->$rkap_col ?? 0, 0, ',', '.') }}
                                 </span>
                             </div>
 
-                            <!-- Kolom 3: Input Realisasi (DB: selisih_col) -->
-                            <div class="col-6 col-md-2 mb-2 mb-md-0 ps-md-4">
-                                <small class="d-md-none text-muted fw-bold x-small d-block mb-1">REALISASI</small>
+                            <!-- Kolom 3: Input Selisih -->
+                            <div class="col-6 col-md-3 mb-2 mb-md-0 ps-md-4">
+                                <small class="d-md-none text-muted fw-bold x-small d-block mb-1">SELISIH</small>
+                                <!-- FIX: Added align-items-center to fix "Rp" alignment issue -->
                                 <div class="input-group input-group-sm align-items-center">
                                     <span class="input-group-text bg-white text-muted border-end-0" style="height: 100%;">Rp</span>
-                                    {{-- Input ini bernama _selisih tapi digunakan untuk input Realisasi --}}
-                                    <input type="number" name="{{ $month }}_selisih" class="form-control border-start-0 shadow-none ps-1 input-realisasi" value="{{ $realisasiValue }}" placeholder="0">
+                                    <input type="number" name="{{ $month }}_selisih" class="form-control border-start-0 shadow-none ps-1 input-selisih" value="{{ $dataVerif->$selisih_col }}" placeholder="0">
                                 </div>
                             </div>
 
-                            <!-- Kolom 4: Selisih (Auto Calculated: RKAP - Realisasi) -->
-                            <div class="col-12 col-md-2 mb-2 mb-md-0 text-md-end">
-                                <div class="d-flex justify-content-between d-md-block">
-                                    <small class="d-md-none text-muted fw-bold x-small d-block mb-1 pt-1">SELISIH (SISA)</small>
-                                    <span class="font-monospace fw-bold display-selisih">
-                                        <!-- Value via JS -->
-                                        Rp 0
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Kolom 5: Keterangan -->
-                            <div class="col-12 col-md-3 mb-2 mb-md-0 ps-md-4">
+                            <!-- Kolom 4: Keterangan -->
+                            <div class="col-12 col-md-3 mb-2 mb-md-0">
                                 <small class="d-md-none text-muted fw-bold x-small d-block mb-1">KETERANGAN</small>
                                 <input type="text" name="{{ $month }}_keterangan" class="form-control form-control-sm shadow-none border-light-subtle rounded-2" value="{{ $dataVerif->$ket_col }}" placeholder="Catatan...">
                             </div>
 
-                            <!-- Kolom 6: Action (Verif) -->
+                            <!-- Kolom 5: Action (Verif) -->
                             <div class="col-12 col-md-1 text-center mt-2 mt-md-0 border-top border-md-top-0 pt-2 pt-md-0">
                                 <div class="d-flex justify-content-between justify-content-md-center align-items-center">
                                     <span class="d-md-none fw-bold small text-dark">Verifikasi?</span>
 
+                                    <!-- Checkbox: Value adalah Nama User yang sedang login -->
                                     @if(!$isVerified)
                                     <div class="form-check form-switch d-md-none">
                                         <input class="form-check-input" type="checkbox" role="switch" name="{{ $month }}_verif_by" value="{{ auth()->user()->nama ?? auth()->user()->name }}" {{ $isVerified ? 'checked disabled' : '' }}>
@@ -163,6 +146,7 @@
                                         <input class="form-check-input shadow-none border-secondary" type="checkbox" name="{{ $month }}_verif_by" value="{{ auth()->user()->nama ?? auth()->user()->name }}" style="width: 1.3em; height: 1.3em; cursor: pointer;" {{ $isVerified ? 'checked disabled' : '' }}>
                                     </div>
                                     @else
+                                    <!-- Jika sudah verif, tampilkan icon checked (non-interactive) -->
                                     <i class='bx bx-check-circle text-success fs-4'></i>
                                     @endif
                                 </div>
@@ -176,10 +160,11 @@
 
                 <!-- Footer Floating/Sticky -->
                 <div class="modal-footer border-top-0 px-4 pb-4 pt-3 bg-white flex-shrink-0">
-                    <div class="d-flex flex-column flex-md-row justify-content-between w-100 align-items-center gap-3">
+                    <div class="d-flex flex-column flex-md-row justify-content-between w-100 align-items-center gap-12">
                         <div class="d-none d-md-block">
-                            <span class="text-muted small">Total Sisa Anggaran (Setahun):</span>
-                            <span class="fw-bold text-dark font-monospace ms-1 total-accumulated-display">Rp 0</span>
+                            <span class="text-muted small">Total Selisih Akumulasi:</span>
+                            <!-- Value will be updated by JS on load -->
+                            <span class="fw-bold text-dark font-monospace ms-1 total-accumulated-display">Rp {{ number_format($dataVerif->total_selisih ?? 0, 0, ',', '.') }}</span>
                         </div>
                         <div class="d-flex gap-2 w-100 w-md-auto">
                             <button type="button" class="btn btn-light text-muted fw-bold rounded-pill px-4 flex-grow-1 flex-md-grow-0" data-bs-dismiss="modal">Batal</button>
@@ -197,71 +182,30 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-
-        const formatter = new Intl.NumberFormat('id-ID');
-
-        // Fungsi menghitung per baris
-        function calculateRow(row) {
-            // Ambil RKAP (default 0 jika error)
-            const rkap = parseFloat(row.dataset.rkap) || 0;
-
-            // Ambil Realisasi (Input User)
-            const inputRealisasi = row.querySelector('.input-realisasi');
-            const realisasi = parseFloat(inputRealisasi.value) || 0;
-
-            // Logic: RKAP - Realisasi = Selisih (Sisa Anggaran)
-            const selisih = rkap - realisasi;
-
-            const displaySelisih = row.querySelector('.display-selisih');
-            if (displaySelisih) {
-                displaySelisih.textContent = 'Rp ' + formatter.format(selisih);
-
-                // Warna Indikator
-                if (selisih < 0) {
-                    // Overbudget (Minus) -> Merah
-                    displaySelisih.classList.remove('text-success', 'text-dark');
-                    displaySelisih.classList.add('text-danger');
-                } else {
-                    // Underbudget/Sisa (Positif) -> Hijau
-                    displaySelisih.classList.remove('text-danger', 'text-dark');
-                    displaySelisih.classList.add('text-success');
-                }
-            }
-            return selisih;
-        }
-
-        // Fungsi loop semua baris dalam modal
+        // Function untuk menghitung total dalam modal tertentu
         function calculateTotalInModal(modal) {
-            let rows = modal.querySelectorAll('.data-row');
-            let totalSelisih = 0;
+            let inputs = modal.querySelectorAll('.input-selisih');
+            let total = 0;
 
-            rows.forEach(function(row) {
-                totalSelisih += calculateRow(row);
+            inputs.forEach(function(input) {
+                total += parseFloat(input.value) || 0;
             });
 
+            let formatted = new Intl.NumberFormat('id-ID').format(total);
             let totalElement = modal.querySelector('.total-accumulated-display');
             if (totalElement) {
-                totalElement.textContent = 'Rp ' + formatter.format(totalSelisih);
-                if (totalSelisih < 0) {
-                    totalElement.classList.remove('text-dark');
-                    totalElement.classList.add('text-danger');
-                } else {
-                    totalElement.classList.remove('text-danger');
-                    totalElement.classList.add('text-dark');
-                }
+                totalElement.textContent = 'Rp ' + formatted;
             }
         }
 
-        // 1. Initial Calculation saat halaman baru dibuka
+        // 1. Hitung saat halaman baru diload (Initial Calculation)
         document.querySelectorAll('.modal').forEach(function(modal) {
-            if (modal.id.startsWith('verifReport')) {
-                calculateTotalInModal(modal);
-            }
+            calculateTotalInModal(modal);
         });
 
-        // 2. Real-time Calculation saat user mengetik input realisasi
+        // 2. Hitung saat user mengetik (Real-time Calculation)
         document.addEventListener('input', function(e) {
-            if (e.target.classList.contains('input-realisasi')) {
+            if (e.target.classList.contains('input-selisih')) {
                 let modal = e.target.closest('.modal');
                 if (modal) {
                     calculateTotalInModal(modal);
