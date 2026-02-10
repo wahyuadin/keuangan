@@ -2,28 +2,35 @@
 
 namespace App\Services;
 
-use App\Models\Item;
+use App\Models\Report;
+use App\Models\Sla;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class ItemService
+class SlaService
 {
     public function tambah($request)
     {
         DB::beginTransaction();
         try {
-            $data = $request->except('_method', '_token', 'secure', 'clinic_id');
-            $data['create_by'] = Auth::id();
-            $item = Item::tambahData($data);
+            $data = $request->except('_method', '_token');
+            $data['create_by'] = Auth::user()->id;
+            Report::tambahData([
+                'item_id' => $data['item_id'],
+                'clinic_id' => $data['clinic_id'],
+                'tahun' => now()->format('Y'),
+                'create_by' => Auth::user()->id,
+            ]);
+            Sla::tambahData($data);
             DB::commit();
             toastify()->success('Data Berhasil Ditambahkan.');
 
-            return redirect()->route('item.index');
+            return redirect()->route('sla.index');
         } catch (\Throwable $th) {
-            DB::rollBack();
-            toastify()->error('Error, '.$th->getMessage());
+            toastify()->error('Error, '.$th);
 
             return redirect()->back();
+            DB::rollback();
         }
     }
 
@@ -33,11 +40,11 @@ class ItemService
         try {
             $data = $request->except('_method', '_token');
             $data['create_by'] = Auth::user()->id;
-            Item::editData($id, $data);
+            Sla::editData($id, $data);
             DB::commit();
             toastify()->success('Data Berhasil diedit.');
 
-            return redirect()->route('item.index');
+            return redirect()->route('sla.index');
         } catch (\Throwable $th) {
             toastify()->error('Error, '.$th);
             DB::rollback();
@@ -50,11 +57,11 @@ class ItemService
     {
         DB::beginTransaction();
         try {
-            Item::hapusData($id);
+            Sla::hapusData($id);
             toastify()->success('Data Berhasil Dihapus.');
             DB::commit();
 
-            return redirect()->route('item.index');
+            return redirect()->route('sla.index');
         } catch (\Throwable $th) {
             toastify()->error('Error, '.$th);
 

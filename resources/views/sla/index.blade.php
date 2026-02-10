@@ -11,12 +11,12 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-6 col-md-8">
-                    <h5 class="card-title">Data Daftar Item</h5>
+                    <h5 class="card-title">Add/Edit Benefit Service Level Agreement</h5>
                 </div>
             </div>
             <div class="table-responsive mt-3">
                 <div class="mt-3 mb-4">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItem">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSla">
                         <i class='bx bx-plus'></i>
                     </button>
                     <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -39,7 +39,9 @@
                             <th>No</th>
                             <th>Item</th>
                             <th>Kategori</th>
-                            <th>Kategori</th>
+                            <th>Klinik</th>
+                            <th>Branch Office</th>
+                            <th>Penetapan RKAP</th>
                             <th>Update By</th>
                             <th>Created At</th>
                             <th>Action</th>
@@ -48,11 +50,13 @@
                     <tbody>
                         @foreach ($data as $index => $dataItem)
                         <tr>
-                            {{-- @dump($dataItem->klinik) --}}
+                            {{-- @dump($dataItem) --}}
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ Str::upper($dataItem->item ?? '-') }}</td>
-                            <td>{{ Str::upper($dataItem->item ?? '-') }}</td>
-                            <td>{{ Str::upper($dataItem->kategori->kategori ?? '-') }}</td>
+                            <td>{{ Str::upper($dataItem->item->item ?? '-') }}</td>
+                            <td>{{ Str::upper($dataItem->item->kategori->kategori ?? '-') }}</td>
+                            <td>{{ Str::upper($dataItem->klinik->nama_klinik ?? '-') }}</td>
+                            <td>{{ Str::upper($dataItem->klinik->branch->nama_branch ?? '-') }}</td>
+                            <td>{{ 'Rp ' . number_format($dataItem->rkap ?? 0, 0, ',', '.') }}</td>
                             @php
                             $user = \App\Models\User::where('id', $dataItem->create_by)->first();
                             @endphp
@@ -61,10 +65,10 @@
                             @if(Auth::user()->role == '2')
                             <td>
                                 <div class="d-flex gap-1">
-                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editItem{{ $dataItem->id }}">
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editSla{{ $dataItem->id }}">
                                         Edit
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteItem{{ $dataItem->id }}">
+                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSla{{ $dataItem->id }}">
                                         Delete
                                     </button>
                                 </div>
@@ -78,9 +82,9 @@
         </div>
     </div>
 </div>
-@include('item.modal.add')
-@include('item.modal.edit')
-@include('item.modal.delete')
+@include('sla.modal.add')
+@include('sla.modal.edit')
+@include('sla.modal.delete')
 @push('style')
 {{-- datatable --}}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.6/css/dataTables.bootstrap5.css">
@@ -108,10 +112,11 @@
 
     $('.select2').each(function() {
         $(this).select2({
-            placeholder: "Cari atau pilih peserta..."
+            placeholder: "Cari atau pilih item..."
             , theme: "bootstrap-5"
             , allowClear: true
-            , dropdownParent: $(this).closest('.modal')
+            , dropdownParent: $(this).closest('.modal').length ?
+                $(this).closest('.modal') : $(document.body)
         });
     });
 

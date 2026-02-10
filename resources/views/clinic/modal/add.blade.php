@@ -16,12 +16,12 @@
                         <select name="branch_id" id="branch_id" class="form-select select2" required>
                             <option value="" disabled selected>Pilih Branch Office</option>
                             @php
-                                $branchOffices = \App\Models\BranchOffice::showData();
+                            $branchOffices = \App\Models\BranchOffice::showData();
                             @endphp
                             @foreach($branchOffices as $branch)
-                                <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>
-                                    {{ Str::upper($branch->nama_branch) }}
-                                </option>
+                            <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>
+                                {{ Str::upper($branch->nama_branch) }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
@@ -38,19 +38,19 @@
                     </div>
                     <div class="mb-3">
                         <label for="Kota" class="form-label">Kota <span class="text-danger">*</span></label>
-                        <input type="text"name="kota" id="kota" class="form-control" placeholder="Masukkan kota klinik">{{ old('kota') }}</input>
+                        <input type="text" name="kota" id="kota" class="form-control" placeholder="Masukkan kota klinik">{{ old('kota') }}</input>
                     </div>
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="penetapan_rkap" class="form-label">Penetapan RKAP</label>
                         <input type="text" name="penetapan_rkap" type="number" id="penetapan_rkap" class="form-control" placeholder="Masukkan penetapan RKAP (opsional)">{{ old('penetapan_rkap') }}</input>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
+                </div> --}}
         </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+        </form>
     </div>
+</div>
 </div>

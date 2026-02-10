@@ -31,12 +31,12 @@
                 <div data-i18n="item">Item</div>
             </a>
         </li>
-        {{-- <li class="menu-item {{ Request::is('master/rkap*') ? 'active' : '' }}">
-        <a href="{{ route('rkap.index') }}" class="menu-link">
-            <i class="menu-icon tf-icons fa-solid fa-calculator"></i>
-            <div data-i18n="item">Penetapan RKAP</div>
-        </a>
-        </li> --}}
+        <li class="menu-item {{ Request::is('master/sla*') ? 'active' : '' }}">
+            <a href="{{ route('sla.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons fa-solid fa-calculator"></i>
+                <div data-i18n="item">Service Level Agreement</div>
+            </a>
+        </li>
         <li class="menu-item {{ Request::is('master/branch-office*') ? 'active' : '' }}">
             <a href="{{ route('branch-office.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons fa-solid fa-code-branch"></i>
@@ -58,10 +58,16 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">On Board</span>
         </li>
-        <li class="menu-item {{ Request::is('report') ? 'active' : '' }}">
-            <a href="{{ route('report.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons fa-solid fa-file-lines"></i>
-                <div data-i18n="Analytics">Konsolidasi</div>
+        {{-- <li class="menu-item {{ Request::is('report') ? 'active' : '' }}">
+        <a href="{{ route('report.index') }}" class="menu-link">
+            <i class="menu-icon tf-icons fa-solid fa-file-lines"></i>
+            <div data-i18n="Analytics">Konsolidasi Cabang</div>
+        </a>
+        </li> --}}
+        <li class="menu-item {{ Request::is('report-clinic') ? 'active' : '' }}">
+            <a href="{{ route('report-clinic.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons fa-solid fa-hospital"></i>
+                <div data-i18n="Analytics">Konsolidasi Klinik</div>
             </a>
         </li>
     </ul>

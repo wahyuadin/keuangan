@@ -1,7 +1,7 @@
 <div class="modal fade" id="addKategori" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addItemLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <form action="{{ route('kategori.store') }}" method="POST">
+            <form action="{{ route('report-clinic.store') }}" method="POST">
                 @csrf
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="addItemLabel">Tambah Data Kategori</h1>

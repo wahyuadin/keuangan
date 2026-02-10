@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
@@ -15,6 +14,7 @@ class LoginController extends Controller
     public function index()
     {
         $rememberDevice = Cookie::get('remember_device', false);
+
         return view('template.login', compact('rememberDevice'));
     }
 
@@ -39,21 +39,23 @@ class LoginController extends Controller
 
         if (Auth::attempt([
             'username' => $request->input('username'),
-            'password' => $request->input('password') // bukan 'user_pass' key, tapi 'password'
+            'password' => $request->input('password'), // bukan 'user_pass' key, tapi 'password'
         ])) {
             if (Auth::user()->is_active != 1) {
                 toastify()->error('Akun Anda belum aktif');
                 Auth::logout();
+
                 return redirect(route('login.index'));
             }
-            toastify()->success('Selamat Datang, ' . auth()->user()->nama);
-            return redirect()->route('report.index');
+            toastify()->success('Selamat Datang, '.auth()->user()->nama);
+
+            return redirect()->route('report-clinic.index');
         } else {
             toastify()->error('Username atau Password yang anda masukkan salah');
+
             return redirect()->back();
         }
     }
-
 
     /**
      * Display the specified resource.
@@ -92,9 +94,11 @@ class LoginController extends Controller
         try {
             Auth::logout();
             toastify()->success('Anda telah berhasil keluar');
+
             return redirect(route('login.index'));
         } catch (\Exception $e) {
-            toastify()->error('Terjadi kesalahan saat logout: ' . $e->getMessage());
+            toastify()->error('Terjadi kesalahan saat logout: '.$e->getMessage());
+
             return redirect()->back();
         }
     }

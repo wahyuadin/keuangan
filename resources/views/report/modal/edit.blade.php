@@ -9,7 +9,7 @@ $isGlobalLocked = $dataItem->approve == '1';
         <div class="modal-content border-0 shadow-lg">
 
             {{-- Sesuaikan route dengan controller Anda untuk menyimpan saldo awal --}}
-            <form action="{{ route('report.update', $dataItem->id) }}" method="POST" class="d-flex flex-column h-100">
+            <form action="{{ route('report-clinic.update', $dataItem->id) }}" method="POST" class="d-flex flex-column h-100">
                 @csrf
                 @method('PUT')
 

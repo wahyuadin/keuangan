@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nama_klinik');
             $table->text('alamat');
             $table->string('kota');
-            $table->string('penetapan_rkap')->nullable();
+            // $table->string('penetapan_rkap')->nullable();
             $table->text('create_by')->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('slas', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('kategori_id')->nullable()->constrained('kategoris')->nullOnDelete();
-            // $table->foreignUuid('clinic_id')->nullable()->constrained('clinics')->nullOnDelete();
-            $table->string('item');
+            $table->foreignUuid('item_id')->nullable()->constrained('items')->nullOnDelete();
+            $table->foreignUuid('clinic_id')->nullable()->constrained('clinics')->nullOnDelete();
+            $table->string('rkap')->nullable();
             $table->text('create_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('slas');
     }
 };

@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
             {{-- Form dengan layout flexbox untuk mendukung scrolling --}}
-            <form action="{{ route('report.update', $dataVerif->id) }}" method="POST" class="d-flex flex-column h-100">
+            <form action="{{ route('report-clinic.update', $dataVerif->id) }}" method="POST" class="d-flex flex-column h-100">
                 @csrf
                 @method('PUT')
 

@@ -1,13 +1,13 @@
 @foreach ($data as $dataEdit)
-<div class="modal fade" id="editItem{{ $dataEdit->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addeditItemLabel" aria-hidden="true">
+<div class="modal fade" id="editSla{{ $dataEdit->id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addeditSlaLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <form action="{{ route('item.update', $dataEdit->id) }}" method="POST">
+            <form action="{{ route('sla.update', $dataEdit->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editItemLabel{{ $dataEdit->id }}">Edit Data
-                        Item</h1>
+                    <h1 class="modal-title fs-5" id="editSlaLabel{{ $dataEdit->id }}">Edit Data
+                        Sla</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 

@@ -9,23 +9,6 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="Klinik" class="form-label">Klinik</label>
-                        <select name="clinic_id" id="clinic_id" class="form-control select2">
-                            <option value="">Pilih Klinik</option>
-                            @php
-                            $klinik = \App\Models\Clinic::showData();
-                            @endphp
-                            @foreach ($klinik as $item)
-                            <option value="{{ $item->id }}" data-branch="{{ $item->branch->id ?? '' }}">
-                                {{ Str::upper($item->nama_klinik) }} - {{ $item->branch->nama_branch ?? '-' }}
-                            </option>
-                            @endforeach
-                        </select>
-
-                        <input name="secure" id="secure" hidden>
-                    </div>
-
                     <!-- kategori -->
                     <div class="mb-3">
                         <label for="Kategori" class="form-label">Kategori</label>
@@ -54,15 +37,3 @@
         </div>
     </div>
 </div>
-
-@push('scripts')
-<script>
-    $(document).ready(function() {
-        $('#clinic_id').on('change', function() {
-            var seCure = $(this).find(':selected').data('branch');
-            $('#secure').val(seCure);
-        });
-    });
-
-</script>
-@endpush

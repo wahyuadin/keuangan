@@ -43,7 +43,7 @@
                             <th>Nama</th>
                             <th>Alamat</th>
                             <th>Kota</th>
-                            <th>Penetapan RKAP</th>
+                            {{-- <th>Penetapan RKAP</th> --}}
                             <th>Updated By</th>
                             <th>Action</th>
                         </tr>
@@ -56,7 +56,7 @@
                             <td>{{ Str::upper($dataItem->nama_klinik ?? '-') }}</td>
                             <td>{{ Str::upper($dataItem->alamat ?? '-') }}</td>
                             <td>{{ Str::upper($dataItem->kota ?? '-') }}</td>
-                            <td>{{ 'Rp ' . number_format($dataItem->penetapan_rkap ?? 0, 0, ',', '.') }}</td>
+                            {{-- <td>{{ 'Rp ' . number_format($dataItem->penetapan_rkap ?? 0, 0, ',', '.') }}</td> --}}
                             @php
                             $user =\App\Models\User::where('id' , $dataItem->create_by)->first();
                             @endphp

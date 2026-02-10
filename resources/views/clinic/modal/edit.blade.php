@@ -17,12 +17,12 @@
                         <select name="branch_id" id="branch_id" class="form-select" required>
                             <option value="" disabled selected>Pilih Branch Office</option>
                             @php
-                                $branchOffices = \App\Models\BranchOffice::showData();
+                            $branchOffices = \App\Models\BranchOffice::showData();
                             @endphp
                             @foreach($branchOffices as $branch)
-                                <option value="{{ $branch->id }}" {{ $dataEdit->branch_id == $branch->id ? 'selected' : '' }}>
-                                    {{ Str::upper($branch->nama_branch) }}
-                                </option>
+                            <option value="{{ $branch->id }}" {{ $dataEdit->branch_id == $branch->id ? 'selected' : '' }}>
+                                {{ Str::upper($branch->nama_branch) }}
+                            </option>
                             @endforeach
                         </select>
                     </div>
@@ -38,18 +38,18 @@
                         <label for="kota" class="form-label">Kota <span class="text-danger">*</span></label>
                         <input type="text" name="kota" id="kota" class="form-control" value="{{ $dataEdit->kota }}" placeholder="Masukkan kota" required>
                     </div>
-                    <div class="mb-3">
+                    {{-- <div class="mb-3">
                         <label for="penetapan_rkap" class="form-label">Penetapan RKAP</label>
                         <input type="number" name="penetapan_rkap" id="penetapan_rkap" class="form-control" value="{{ $dataEdit->penetapan_rkap }}" placeholder="Masukkan penetapan rkap (opsional)" required>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                </div>
-            </form>
+                </div> --}}
         </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </div>
+        </form>
     </div>
+</div>
 </div>
 @endforeach

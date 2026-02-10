@@ -1,5 +1,5 @@
 @foreach ($data as $dataDelete)
-<div class="modal fade" id="deleteReport{{ $dataDelete->id }}" tabindex="-1" aria-labelledby="deleteReport{{ $dataDelete->id }}Label" aria-hidden="true">
+<div class="modal fade" id="deleteSla{{ $dataDelete->id }}" tabindex="-1" aria-labelledby="deleteSla{{ $dataDelete->id }}Label" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body text-center p-4">
@@ -14,7 +14,7 @@
 
                 <div class="d-flex justify-content-center mt-4">
                     <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                    <form action="{{ route('report-clinic.destroy', $dataDelete->id) }}" method="POST" class="d-inline">
+                    <form action="{{ route('sla.destroy', $dataDelete->id) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger">Ya, Hapus</button>

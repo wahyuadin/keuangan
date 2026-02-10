@@ -11,7 +11,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-6 col-md-8">
-                    <h5 class="card-title">Data Report</h5>
+                    <h5 class="card-title">Data Report Klinik</h5>
                 </div>
             </div>
             <div class="table-responsive mt-3">
@@ -73,6 +73,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
+                            <th>Klinik</th>
                             <th>Branch Office</th>
                             <th>Tahun</th>
                             <th>Kategori</th>
@@ -165,17 +166,18 @@
                         $grand_total_saldo += $total_saldo;
                         $grand_total_selisih += $total_selisih;
                         @endphp
-
                         <tr>
+                            @dump($dataItem)
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ Str::upper($dataItem->branch->nama_branch ?? '-') }}</td>
+                            <td>{{ Str::upper($dataItem->clinic->nama_klinik ?? '-') }}</td>
+                            <td>{{ Str::upper($dataItem->clinic->branch->nama_branch ?? '-') }}</td>
                             <td>{{ Str::upper($dataItem->tahun ?? '-') }}</td>
                             <td>{{ Str::upper($dataItem->item->kategori->kategori ?? '-') }}</td>
                             <td>{{ Str::upper($dataItem->item->item ?? '-') }}</td>
                             @php
                             $user = \App\Models\User::where('id', $dataItem->create_by)->first();
                             @endphp
-                            <td>{{ Str::upper('Tahap Pengembangan' ?? '-') }}</td>
+                            <td>{{ Str::upper($dataItem->clinic->rkap ?? '-') }}</td>
                             <td>Rp {{ number_format($dataItem->januari ?? 0, 0, ',', '.') }}</td>
                             <td>{{ Str::upper($dataItem->januari_verif_by ?? '-') }}</td>
                             <td>Rp {{ number_format($dataItem->januari_selisih ?? 0, 0, ',', '.') }}</td>

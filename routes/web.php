@@ -8,6 +8,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RkapController;
+use App\Http\Controllers\SlaController;
 use App\Http\Controllers\UserDataController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,9 +19,10 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('branch-office', BranchController::class);
         Route::resource('clinic', ClinicController::class);
         Route::resource('rkap', RkapController::class);
+        Route::resource('sla', SlaController::class);
         Route::resource('user-data', UserDataController::class);
     });
-    Route::resource('report', ReportController::class);
+    Route::resource('report-clinic', ReportController::class);
     Route::get('audit', [Controller::class, 'auditable'])->name('audit');
 });
 Route::resource('login', LoginController::class);
