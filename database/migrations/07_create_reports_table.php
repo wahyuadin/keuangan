@@ -17,65 +17,66 @@ return new class extends Migration
             // $table->foreignUuid('branch_id')->nullable()->constrained('branchoffices')->nullOnDelete();
             $table->foreignUuid('clinic_id')->nullable()->constrained('clinics')->nullOnDelete();
             $table->foreignUuid('item_id')->nullable()->constrained('items')->nullOnDelete();
+            $table->foreignUuid('sla_id')->nullable()->constrained('slas')->nullOnDelete();
             $table->string('januari')->default(0);
             $table->string('januari_verif_by')->nullable(); // x
             $table->string('januari_verif_by_ho')->nullable(); // x
-            $table->string('januari_selisih')->nullable(); // v
+            $table->string('januari_realisasi')->nullable(); // v
             $table->string('januari_keterangan')->nullable(); // v
             $table->string('februari')->default(0);
             $table->string('februari_verif_by')->nullable();
             $table->string('februari_verif_by_ho')->nullable(); // x
-            $table->string('februari_selisih')->nullable();
+            $table->string('februari_realisasi')->nullable();
             $table->string('februari_keterangan')->nullable();
             $table->string('maret')->default(0);
             $table->string('maret_verif_by')->nullable();
             $table->string('maret_verif_by_ho')->nullable(); // x
-            $table->string('maret_selisih')->nullable();
+            $table->string('maret_realisasi')->nullable();
             $table->string('maret_keterangan')->nullable();
             $table->string('april')->default(0);
             $table->string('april_verif_by')->nullable();
             $table->string('april_verif_by_ho')->nullable(); // x
-            $table->string('april_selisih')->nullable();
+            $table->string('april_realisasi')->nullable();
             $table->string('april_keterangan')->nullable();
             $table->string('mei')->default(0);
             $table->string('mei_verif_by')->nullable();
             $table->string('mei_verif_by_ho')->nullable(); // x
-            $table->string('mei_selisih')->nullable();
+            $table->string('mei_realisasi')->nullable();
             $table->string('mei_keterangan')->nullable();
             $table->string('juni')->default(0);
             $table->string('juni_verif_by')->nullable();
             $table->string('juni_verif_by_ho')->nullable(); // x
-            $table->string('juni_selisih')->nullable();
+            $table->string('juni_realisasi')->nullable();
             $table->string('juni_keterangan')->nullable();
             $table->string('juli')->default(0);
             $table->string('juli_verif_by')->nullable();
             $table->string('juli_verif_by_ho')->nullable(); // x
-            $table->string('juli_selisih')->nullable();
+            $table->string('juli_realisasi')->nullable();
             $table->string('juli_keterangan')->nullable();
             $table->string('agustus')->default(0);
             $table->string('agustus_verif_by')->nullable();
             $table->string('agustus_verif_by_ho')->nullable(); // x
-            $table->string('agustus_selisih')->nullable();
+            $table->string('agustus_realisasi')->nullable();
             $table->string('agustus_keterangan')->nullable();
             $table->string('september')->default(0);
             $table->string('september_verif_by')->nullable();
             $table->string('september_verif_by_ho')->nullable(); // x
-            $table->string('september_selisih')->nullable();
+            $table->string('september_realisasi')->nullable();
             $table->string('september_keterangan')->nullable();
             $table->string('oktober')->default(0);
             $table->string('oktober_verif_by')->nullable();
             $table->string('oktober_verif_by_ho')->nullable(); // x
-            $table->string('oktober_selisih')->nullable();
+            $table->string('oktober_realisasi')->nullable();
             $table->string('oktober_keterangan')->nullable();
             $table->string('november')->default(0);
             $table->string('november_verif_by')->nullable();
             $table->string('november_verif_by_ho')->nullable(); // x
-            $table->string('november_selisih')->nullable();
+            $table->string('november_realisasi')->nullable();
             $table->string('november_keterangan')->nullable();
             $table->string('desember')->default(0);
             $table->string('desember_verif_by')->nullable();
             $table->string('desember_verif_by_ho')->nullable(); // x
-            $table->string('desember_selisih')->nullable();
+            $table->string('desember_realisasi')->nullable();
             $table->string('desember_keterangan')->nullable();
             $table->string('tahun')->nullable();
             $table->text('create_by')->nullable();

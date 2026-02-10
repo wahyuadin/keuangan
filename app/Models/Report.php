@@ -37,6 +37,11 @@ class Report extends Model implements Auditable
         return $this->belongsTo(Item::class, 'item_id', 'id');
     }
 
+    public function sla()
+    {
+        return $this->belongsTo(Sla::class, 'sla_id', 'id');
+    }
+
     public function branch()
     {
         return $this->belongsTo(Branchoffice::class, 'branch_id', 'id');
@@ -44,7 +49,7 @@ class Report extends Model implements Auditable
 
     public static function showData($id = null)
     {
-        return $id ? self::find($id)->with('user', 'clinic', 'branch', 'item')->first() : self::latest()->with('user', 'clinic.branch', 'branch', 'item')->get();
+        return $id ? self::find($id)->with('user', 'clinic', 'branch', 'item', 'sla')->first() : self::latest()->with('user', 'clinic.branch', 'branch', 'item', 'sla')->get();
     }
 
     public static function tambahData($data)

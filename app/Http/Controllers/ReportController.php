@@ -20,6 +20,16 @@ class ReportController extends Controller
         return view('report.index', ['data' => report::showData()]);
     }
 
+    public function branch()
+    {
+        return view('report.branch-office.index', ['data' => report::showData()]);
+    }
+
+    public function headOffice()
+    {
+        return view('report.head-office.index', ['data' => report::showData()]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

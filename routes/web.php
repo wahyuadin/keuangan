@@ -23,6 +23,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('user-data', UserDataController::class);
     });
     Route::resource('report-clinic', ReportController::class);
+    Route::get('report-branch', [ReportController::class, 'branch'])->name('report.branch');
+    Route::get('report-ho', [ReportController::class, 'headOffice'])->name('report.ho');
     Route::get('audit', [Controller::class, 'auditable'])->name('audit');
 });
 Route::resource('login', LoginController::class);

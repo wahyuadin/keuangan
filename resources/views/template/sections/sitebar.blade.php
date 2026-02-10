@@ -58,12 +58,18 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">On Board</span>
         </li>
-        {{-- <li class="menu-item {{ Request::is('report') ? 'active' : '' }}">
-        <a href="{{ route('report.index') }}" class="menu-link">
-            <i class="menu-icon tf-icons fa-solid fa-file-lines"></i>
-            <div data-i18n="Analytics">Konsolidasi Cabang</div>
-        </a>
-        </li> --}}
+        <li class="menu-item {{ Request::is('report-ho') ? 'active' : '' }}">
+            <a href="{{ route('report.ho') }}" class="menu-link">
+                <i class="menu-icon tf-icons fa-solid fa-file-lines"></i>
+                <div data-i18n="Analytics">Konsolidasi Head Office</div>
+            </a>
+        </li>
+        <li class="menu-item {{ Request::is('report-branch') ? 'active' : '' }}">
+            <a href="{{ route('report.branch') }}" class="menu-link">
+                <i class="menu-icon tf-icons fa-solid fa-file-lines"></i>
+                <div data-i18n="Analytics">Konsolidasi Cabang</div>
+            </a>
+        </li>
         <li class="menu-item {{ Request::is('report-clinic') ? 'active' : '' }}">
             <a href="{{ route('report-clinic.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons fa-solid fa-hospital"></i>

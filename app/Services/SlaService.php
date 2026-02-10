@@ -15,19 +15,20 @@ class SlaService
         try {
             $data = $request->except('_method', '_token');
             $data['create_by'] = Auth::user()->id;
+            $dataSLA = Sla::tambahData($data);
             Report::tambahData([
                 'item_id' => $data['item_id'],
+                'sla_id' => $dataSLA->id,
                 'clinic_id' => $data['clinic_id'],
                 'tahun' => now()->format('Y'),
                 'create_by' => Auth::user()->id,
             ]);
-            Sla::tambahData($data);
             DB::commit();
             toastify()->success('Data Berhasil Ditambahkan.');
 
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
-            toastify()->error('Error, '.$th);
+            toastify()->error('Error, ' . $th);
 
             return redirect()->back();
             DB::rollback();
@@ -46,7 +47,7 @@ class SlaService
 
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
-            toastify()->error('Error, '.$th);
+            toastify()->error('Error, ' . $th);
             DB::rollback();
 
             return redirect()->back();
@@ -63,7 +64,7 @@ class SlaService
 
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
-            toastify()->error('Error, '.$th);
+            toastify()->error('Error, ' . $th);
 
             return redirect()->back();
             DB::rollback();

@@ -66,7 +66,7 @@
                         @foreach ($months as $month)
                         @php
                         $verif_by_col = $month . '_verif_by';
-                        $selisih_col = $month . '_selisih'; // NOTE: Kolom ini menyimpan NILAI REALISASI
+                        $selisih_col = $month . '_realisasi'; // NOTE: Kolom ini menyimpan NILAI REALISASI
                         $ket_col = $month . '_keterangan';
                         $rkap_col = $month;
 
@@ -128,7 +128,7 @@
                                 <div class="input-group input-group-sm align-items-center">
                                     <span class="input-group-text bg-white text-muted border-end-0" style="height: 100%;">Rp</span>
                                     {{-- Input ini bernama _selisih tapi digunakan untuk input Realisasi --}}
-                                    <input type="number" name="{{ $month }}_selisih" class="form-control border-start-0 shadow-none ps-1 input-realisasi" value="{{ $realisasiValue }}" placeholder="0">
+                                    <input type="number" name="{{ $month }}_realisasi" class="form-control border-start-0 shadow-none ps-1 input-realisasi" value="{{ $realisasiValue }}" placeholder="0">
                                 </div>
                             </div>
 

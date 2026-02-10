@@ -17,7 +17,7 @@ class ReportService
             Report::tambahData($data);
             DB::commit();
             toastify()->success('Data Berhasil Ditambahkan.');
-            return redirect()->route('report.index');
+            return redirect()->back();
         } catch (\Throwable $th) {
             toastify()->error('Error, ' . $th);
             return redirect()->back();
@@ -34,7 +34,7 @@ class ReportService
             Report::editData($id, $data);
             DB::commit();
             toastify()->success('Data Berhasil diedit.');
-            return redirect()->route('report.index');
+            return redirect()->back();
         } catch (\Throwable $th) {
             toastify()->error('Error, ' . $th);
             DB::rollback();
