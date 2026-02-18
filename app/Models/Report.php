@@ -42,14 +42,14 @@ class Report extends Model implements Auditable
         return $this->belongsTo(Sla::class, 'sla_id', 'id');
     }
 
-    public function branch()
-    {
-        return $this->belongsTo(Branchoffice::class, 'branch_id', 'id');
-    }
+    // public function branch()
+    // {
+    //     return $this->belongsTo(Branchoffice::class, 'branch_id', 'id');
+    // }
 
     public static function showData($id = null)
     {
-        return $id ? self::find($id)->with('user', 'clinic', 'branch', 'item', 'sla')->first() : self::latest()->with('user', 'clinic.branch', 'branch', 'item', 'sla')->get();
+        return $id ? self::find($id)->with('user', 'clinic', 'item', 'sla')->first() : self::latest()->with('user', 'clinic.branch', 'item', 'sla')->get();
     }
 
     public static function tambahData($data)

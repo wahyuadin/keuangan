@@ -24,7 +24,10 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::resource('report-clinic', ReportController::class);
     Route::get('report-branch', [ReportController::class, 'branch'])->name('report.branch');
-    Route::get('report-ho', [ReportController::class, 'headOffice'])->name('report.ho');
+    Route::prefix('report-ho')->group(function () {
+        Route::get('/', [ReportController::class, 'headOffice'])->name('report.ho');
+        Route::put('/', [ReportController::class, 'approveHeadOffice'])->name('report.approve_ho');
+    });
     Route::get('audit', [Controller::class, 'auditable'])->name('audit');
 });
 Route::resource('login', LoginController::class);
