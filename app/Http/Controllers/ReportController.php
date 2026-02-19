@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReportClinicExport;
 use App\Models\Report;
 use App\Services\ReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -17,9 +19,9 @@ class ReportController extends Controller
         $this->report = $report;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return view('report.index', ['data' => report::showData()]);
+        return view('report.index', ['data' => report::showData($request->bo)]);
     }
 
     public function branch()
@@ -145,5 +147,18 @@ class ReportController extends Controller
     public function destroy(string $id)
     {
         return $this->report->hapus($id);
+    }
+
+
+    // report
+    public function exportClinic(Request $request)
+    {
+        $tahun = $request->tahun ?? date('Y');
+        $branchId = $request->branch_id;
+
+        return Excel::download(
+            new ReportClinicExport($tahun, $branchId),
+            "Laporan_Konsolidasi_klinik_{$tahun}.xlsx"
+        );
     }
 }

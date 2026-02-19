@@ -15,10 +15,10 @@
                         <select name="item_id" id="item_id" class="form-control select2">
                             <option value="">Pilih Item</option>
                             @php
-                            $item = \App\Models\Item::select('id', 'item')->get();
+                            $item = \App\Models\Item::showData();
                             @endphp
                             @foreach ($item as $itemData)
-                            <option value="{{ $itemData->id }}">{{ $itemData->item }}</option>
+                            <option value="{{ $itemData->id }}">{{ Str::upper($itemData->item) }} [{{ $itemData->kategori->kategori ?? '-' }}]</option>
                             @endforeach
                         </select>
                     </div>

@@ -49,7 +49,9 @@ class Report extends Model implements Auditable
 
     public static function showData($id = null)
     {
-        return $id ? self::find($id)->with('user', 'clinic', 'item', 'sla')->first() : self::latest()->with('user', 'clinic.branch', 'item', 'sla')->get();
+        return $id ? self::with('user', 'clinic.branch', 'item', 'sla')->whereHas('clinic.branch', function ($q) use ($id) {
+            $q->where('id', $id);
+        })->get() : self::latest()->with('user', 'clinic.branch', 'item', 'sla')->get();
     }
 
     public static function tambahData($data)

@@ -59,6 +59,7 @@ class SlaService
         DB::beginTransaction();
         try {
             Sla::hapusData($id);
+            Report::where('sla_id', $id)->delete();
             toastify()->success('Data Berhasil Dihapus.');
             DB::commit();
 

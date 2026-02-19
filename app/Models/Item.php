@@ -34,7 +34,7 @@ class Item extends Model implements Auditable
 
     public function branch()
     {
-        return $this->belongsTo(BranchOffice::class, 'branch_id', 'id');
+        return $this->belongsTo(Branchoffice::class, 'branch_id', 'id');
     }
 
     public static function showData($id = null)

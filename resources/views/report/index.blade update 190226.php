@@ -46,8 +46,11 @@
             </div>
 
             <!-- Toolbar & Filter -->
-            <div class="mt-3 mb-4 d-flex justify-content-between align-items-end flex-wrap gap-4">
+            <div class="mt-3 mb-4 d-flex justify-content-between align-items-end flex-wrap gap-2">
                 <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addKategori">
+                        <i class='bx bx-plus'></i> Tambah
+                    </button>
                     <div class="dropdown">
                         <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class='bx bx-export'></i> Export
@@ -60,17 +63,30 @@
                 </div>
 
                 <!-- Filter Form -->
-                <form action="" method="GET" class="d-flex gap-4 flex-wrap">
+                <form action="" method="GET" class="d-flex gap-2 flex-wrap">
                     <div>
-                        <label class="form-label small">Branch Office</label>
-                        <select name="bo" class="form-select form-select-sm select2" style="width: 120px;">
-                            @php
-                            $bo = \App\Models\BranchOffice::orderBy('nama_branch')->get();
-                            foreach ($bo as $branch) {
-                            $selected = request('bo') == $branch->id ? 'selected' : '';
-                            echo "<option value='{$branch->id}' {$selected}>{$branch->nama_branch}</option>";
-                            }
-                            @endphp
+                        <label class="form-label small">Bulan</label>
+                        <select name="bulan" class="form-select form-select-sm select2" style="width: 120px;">
+                            @for ($i = 1; $i <= 12; $i++) <option value="{{ $i }}" {{ request('bulan', date('n')) == $i ? 'selected' : '' }}>
+                                {{ date('F', mktime(0, 0, 0, $i, 1)) }}
+                                </option>
+                                @endfor
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label small">Tahun</label>
+                        <select name="tahun" class="form-select form-select-sm select2" style="width: 100px;">
+                            @for ($y = date('Y'); $y >= 2020; $y--)
+                            <option value="{{ $y }}" {{ request('tahun', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label small">Status</label>
+                        <select name="approve" class="form-select form-select-sm select2" style="width: 120px;">
+                            <option value="" {{ request('approve') == '' ? 'selected' : '' }}>All</option>
+                            <option value="1" {{ request('approve') == '1' ? 'selected' : '' }}>Approve</option>
+                            <option value="0" {{ request('approve') == '0' ? 'selected' : '' }}>Not Approve</option>
                         </select>
                     </div>
                     <div class="align-self-end">

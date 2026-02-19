@@ -29,6 +29,11 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/', [ReportController::class, 'approveHeadOffice'])->name('report.approve_ho');
     });
     Route::get('audit', [Controller::class, 'auditable'])->name('audit');
+    Route::prefix('export')->group(function () {
+        Route::get('clinic', [ReportController::class, 'exportClinic'])->name('export.clinic');
+        Route::get('branch', [ReportController::class, 'exportBranch'])->name('export.branch');
+        Route::get('ho', [ReportController::class, 'exportHeadOffice'])->name('export.ho');
+    });
 });
 Route::resource('login', LoginController::class);
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
