@@ -14,15 +14,39 @@ class ClinicPerSheetExport implements FromView, WithTitle, ShouldAutoSize, WithS
 {
     protected $tahun;
     protected $clinic;
+    protected $bulanAwal;
+    protected $bulanAkhir;
 
-    public function __construct($tahun, $clinic)
+    public function __construct($tahun, $clinic, $bulanAwal, $bulanAkhir)
     {
-        $this->tahun = $tahun;
-        $this->clinic = $clinic;
+        $this->tahun      = $tahun;
+        $this->clinic     = $clinic;
+        $this->bulanAwal  = $bulanAwal;
+        $this->bulanAkhir = $bulanAkhir;
     }
 
     public function view(): View
     {
+        $listBulan = [
+            'januari',
+            'februari',
+            'maret',
+            'april',
+            'mei',
+            'juni',
+            'juli',
+            'agustus',
+            'september',
+            'oktober',
+            'november',
+            'desember'
+        ];
+
+        $startIndex = array_search($this->bulanAwal, $listBulan);
+        $endIndex   = array_search($this->bulanAkhir, $listBulan);
+
+        $filteredBulan = array_slice($listBulan, $startIndex, ($endIndex - $startIndex + 1));
+
         $reports = Report::with(['item.kategori', 'sla'])
             ->where('clinic_id', $this->clinic->id)
             ->where('tahun', $this->tahun)
@@ -32,10 +56,10 @@ class ClinicPerSheetExport implements FromView, WithTitle, ShouldAutoSize, WithS
             });
 
         return view('exports.report_clinic_excel', [
-            'data' => $reports,
-            'clinic' => $this->clinic,
-            'tahun' => $this->tahun,
-            'listBulan' => ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember']
+            'data'       => $reports,
+            'clinic'     => $this->clinic,
+            'tahun'      => $this->tahun,
+            'listBulan'  => $filteredBulan
         ]);
     }
 

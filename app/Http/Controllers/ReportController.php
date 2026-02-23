@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ReportClinicExport;
+use App\Models\Clinic;
 use App\Models\Report;
+use App\Models\Sla;
 use App\Services\ReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +23,77 @@ class ReportController extends Controller
 
     public function index(Request $request)
     {
-        return view('report.index', ['data' => report::showData($request->bo)]);
+        $query = Report::with('clinic.branch', 'item', 'sla');
+
+        // Filter Branch
+        if ($request->filled('branch_id')) {
+            $query->whereHas('clinic', function ($q) use ($request) {
+                $q->where('branch_id', $request->branch_id);
+            });
+        }
+
+        // Filter Klinik
+        if ($request->filled('clinic_id')) {
+            $query->where('clinic_id', $request->clinic_id);
+        }
+
+        // Filter Tahun
+        if ($request->filled('tahun')) {
+            $query->where('tahun', $request->tahun);
+        }
+
+        $data = $query->orderBy('tahun', 'desc')->get();
+
+        return view('report.index', compact('data'));
+    }
+
+    public function checkExisting(Request $request)
+    {
+        $request->validate([
+            'id_clinic' => 'required',
+            'id_item'   => 'required',
+            'tahun'     => 'required',
+        ]);
+
+        $data = Report::where('clinic_id', $request->id_clinic)
+            ->where('item_id', $request->id_item)
+            ->where('tahun', $request->tahun)
+            ->first();
+
+
+        if ($data) {
+            return response()->json([
+                'success' => true,
+                'data'    => $data
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Data tidak ditemukan'
+        ]);
+    }
+
+    public function getBranchClinics($branchId)
+    {
+        return Clinic::where('branch_id', $branchId)
+            ->orderBy('nama_klinik')
+            ->get(['id', 'nama_klinik']);
+    }
+
+    public function getClinicItems($clinicId)
+    {
+        return Sla::with('item')
+            ->where('clinic_id', $clinicId)
+            ->get()
+            ->map(function ($sla) {
+                return [
+                    'id' => $sla->item->id,
+                    'text' => strtoupper($sla->item->item),
+                    'sla_id' => $sla->id,
+                    'rkap' => $sla->rkap
+                ];
+            });
     }
 
     public function branch()
@@ -40,8 +112,8 @@ class ReportController extends Controller
             'item_id'       => 'required',
             'month'         => 'required|string',
             'tahun'         => 'required',
-            'realisasi_ho'  => 'nullable|numeric|min:0', // Inputan baru
-            'keterangan_ho' => 'nullable|string',        // Inputan baru
+            'realisasi_ho'  => 'nullable|numeric|min:0',
+            'keterangan_ho' => 'nullable|string',
         ]);
 
         $month  = strtolower($request->month);
@@ -67,8 +139,6 @@ class ReportController extends Controller
                 return redirect()->back()->with('warning', 'Tidak ada data yang dapat diverifikasi. Pastikan klinik cabang sudah melakukan verifikasi laporan terlebih dahulu.');
             }
 
-            // 2. Update Status Verifikasi & Keterangan HO (Ke SEMUA baris terkait)
-            // Keterangan kita samakan ke semua baris agar konsisten
             Report::whereIn('id', $validReports->pluck('id'))
                 ->update([
                     $colVerifHO => Auth::user()->nama ?? Auth::user()->name ?? 'HO Admin',
@@ -113,7 +183,64 @@ class ReportController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->report->tambah($request);
+        $request->validate([
+            'clinic_id' => 'required',
+            'item_id'   => 'required',
+            'tahun'     => 'required',
+        ]);
+
+        $months = [
+            'januari',
+            'februari',
+            'maret',
+            'april',
+            'mei',
+            'juni',
+            'juli',
+            'agustus',
+            'september',
+            'oktober',
+            'november',
+            'desember'
+        ];
+
+        $report = Report::updateOrCreate(
+            [
+                'clinic_id' => $request->clinic_id,
+                'item_id'   => $request->item_id,
+                'tahun'     => $request->tahun,
+            ],
+            [
+                'create_by' => Auth::id(),
+            ]
+        );
+
+        foreach ($months as $m) {
+            if ($request->filled($m)) {
+                $val = str_replace(['Rp', '.', ' '], '', $request->$m);
+                $report->$m = $val ?: 0;
+            }
+            // Realisasi
+            if ($request->filled($m . '_realisasi')) {
+
+                $realVal = str_replace(['Rp', '.', ' '], '', $request->{$m . '_realisasi'});
+                $realVal = $realVal ?: 0;
+                $report->{$m . '_realisasi'} = $realVal;
+                if ($realVal > 0) {
+                    $report->{$m . '_verif_by'} = Auth::user()->nama ?? 'Klinik Admin';
+                }
+            }
+            if ($request->has($m . '_keterangan')) {
+                $report->{$m . '_keterangan'} =
+                    $request->{$m . '_keterangan'};
+            }
+        }
+
+        // dd($report->toArray());
+        $report->save();
+
+        return redirect()->back()
+            ->with('success', 'Data Anggaran berhasil dikonsolidasi.');
     }
 
     /**
@@ -137,7 +264,6 @@ class ReportController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // dd($request->all());
         return $this->report->edit($id, $request);
     }
 
@@ -150,15 +276,17 @@ class ReportController extends Controller
     }
 
 
-    // report
+    // export
     public function exportClinic(Request $request)
     {
-        $tahun = $request->tahun ?? date('Y');
-        $branchId = $request->branch_id;
+        $tahun      = $request->tahun ?? date('Y');
+        $branchId   = $request->branch_id;
+        $bulanAwal  = $request->bulan_awal ?? 'januari';
+        $bulanAkhir = $request->bulan_akhir ?? 'desember';
 
         return Excel::download(
-            new ReportClinicExport($tahun, $branchId),
-            "Laporan_Konsolidasi_klinik_{$tahun}.xlsx"
+            new ReportClinicExport($tahun, $branchId, [], $bulanAwal, $bulanAkhir),
+            "Laporan_{$tahun}_{$bulanAwal}_sd_{$bulanAkhir}.xlsx"
         );
     }
 }

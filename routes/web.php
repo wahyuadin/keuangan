@@ -24,15 +24,23 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::resource('report-clinic', ReportController::class);
     Route::get('report-branch', [ReportController::class, 'branch'])->name('report.branch');
+    Route::get('audit', [Controller::class, 'auditable'])->name('audit');
     Route::prefix('report-ho')->group(function () {
         Route::get('/', [ReportController::class, 'headOffice'])->name('report.ho');
         Route::put('/', [ReportController::class, 'approveHeadOffice'])->name('report.approve_ho');
     });
-    Route::get('audit', [Controller::class, 'auditable'])->name('audit');
     Route::prefix('export')->group(function () {
         Route::get('clinic', [ReportController::class, 'exportClinic'])->name('export.clinic');
         Route::get('branch', [ReportController::class, 'exportBranch'])->name('export.branch');
         Route::get('ho', [ReportController::class, 'exportHeadOffice'])->name('export.ho');
+    });
+    Route::prefix('server-side')->group(function () {
+        Route::get('kons-klinik', [ReportController::class, 'checkExisting'])
+            ->name('report.check-existing');
+        Route::get('branch-clinics/{branch}', [ReportController::class, 'getBranchClinics'])
+            ->name('server.branch-clinics');
+        Route::get('clinic-items/{clinic}', [ReportController::class, 'getClinicItems'])
+            ->name('server.clinic-items');
     });
 });
 Route::resource('login', LoginController::class);

@@ -10,16 +10,20 @@ class ReportClinicExport implements WithMultipleSheets
     protected $tahun;
     protected $branchId;
     protected $clinicIds;
+    protected $bulanAwal;
+    protected $bulanAkhir;
 
     /**
      * @param int|string
      * @param string|null
      * @param mixed
      */
-    public function __construct($tahun, $branchId = null, $clinicIds = [])
+    public function __construct($tahun, $branchId = null, $clinicIds = [], $bulanAwal = 'januari', $bulanAkhir = 'desember')
     {
-        $this->tahun = $tahun;
-        $this->branchId = $branchId;
+        $this->tahun      = $tahun;
+        $this->branchId   = $branchId;
+        $this->bulanAwal  = $bulanAwal;
+        $this->bulanAkhir = $bulanAkhir;
 
         if (is_array($clinicIds)) {
             $this->clinicIds = $clinicIds;
@@ -50,7 +54,12 @@ class ReportClinicExport implements WithMultipleSheets
         }
 
         foreach ($clinics as $clinic) {
-            $sheets[] = new ClinicPerSheetExport($this->tahun, $clinic);
+            $sheets[] = new ClinicPerSheetExport(
+                $this->tahun,
+                $clinic,
+                $this->bulanAwal,
+                $this->bulanAkhir
+            );
         }
 
         return $sheets;
