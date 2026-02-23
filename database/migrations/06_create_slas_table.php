@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignUuid('item_id')->nullable()->constrained('items')->nullOnDelete();
             $table->foreignUuid('clinic_id')->nullable()->constrained('clinics')->nullOnDelete();
             $table->string('rkap')->nullable();
+            $table->string('tahun')->nullable();
             $table->text('create_by')->nullable();
             $table->softDeletes();
             $table->timestamps();

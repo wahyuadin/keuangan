@@ -42,6 +42,7 @@
                             <th>Klinik</th>
                             <th>Branch Office</th>
                             <th>Penetapan RKAP</th>
+                            <th>Tahun</th>
                             <th>Update By</th>
                             <th>Created At</th>
                             <th>Action</th>
@@ -57,6 +58,7 @@
                             <td>{{ Str::upper($dataItem->klinik->nama_klinik ?? '-') }}</td>
                             <td>{{ Str::upper($dataItem->klinik->branch->nama_branch ?? '-') }}</td>
                             <td>{{ 'Rp ' . number_format($dataItem->rkap ?? 0, 0, ',', '.') }}</td>
+                            <td>{{ $dataItem->tahun ?? '-' }}</td>
                             @php
                             $user = \App\Models\User::where('id', $dataItem->create_by)->first();
                             @endphp

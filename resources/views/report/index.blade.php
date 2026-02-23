@@ -222,7 +222,7 @@
                             <td><span class="badge bg-light text-primary border fw-normal">{{ strtoupper($item->clinic->branch->nama_branch ?? '-') }}</span></td>
                             <td class="text-center">{{ $item->tahun }}</td>
                             <td>
-                                <div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;" title="{{ strtoupper($item->item->item ?? '-') }}">{{ strtoupper($item->item->item ?? '-') }}</div>
+                                <div title="{{ strtoupper($item->item->item ?? '-') }}">{{ strtoupper($item->item->item ?? '-') }}</div>
                             </td>
                             <td class="text-end fw-semibold">Rp {{ number_format($item->sla->rkap ?? 0, 0, ',', '.') }}</td>
 

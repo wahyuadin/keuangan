@@ -12,20 +12,47 @@
                 </div>
 
                 <div class="modal-body">
+                    <!-- kategori -->
                     <div class="mb-3">
-                        <label for="kategori_id" class="form-label">Kategori</label>
-                        <select name="kategori_id" id="kategori_id" class="form-select">
+                        <label for="Kategori" class="form-label">Item</label>
+                        <select name="item_id" id="item_id" class="form-select">
+                            <option value="">Pilih Item</option>
                             @php
-                            $kategori = \App\Models\Kategori::select('id', 'kategori')->get();
+                            $item = \App\Models\Item::showData();
                             @endphp
-                            @foreach ($kategori as $kategoris)
-                            <option value="{{ $kategoris->id }}" {{ $dataEdit->kategori_id == $kategoris->id ? 'selected' : '' }}>{{ $kategoris->kategori }}</option>
+                            @foreach ($item as $itemData)
+                            <option value="{{ $itemData->id }}" @selected($dataEdit->item_id == $itemData->id)>{{ Str::upper($itemData->item) }} [{{ $itemData->kategori->kategori ?? '-' }}]</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <!-- Nama item -->
+                    <div class="mb-3">
+                        <label for="clinic_id" class="form-label">Klinik</label>
+                        <select name="clinic_id" id="clinic_id" class="form-select">
+                            <option value="">Pilih Klinik</option>
+                            @php
+                            $clinic = \App\Models\Clinic::select('id', 'nama_klinik')->get();
+                            @endphp
+                            @foreach ($clinic as $clinicItem)
+                            <option value="{{ $clinicItem->id }}" @selected($dataEdit->clinic_id == $clinicItem->id)>{{ $clinicItem->nama_klinik }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="item" class="form-label">Item <span class="text-danger">*</span></label>
-                        <input type="text" name="item" id="item" class="form-control" value="{{ $dataEdit->item }}" placeholder="Masukkan nama item" required>
+                        <label for="rkap" class="form-label">Penetapan RKAP <span class="text-danger">*</span></label>
+                        <input type="number" name="rkap" id="rkap" class="form-control" placeholder="Masukkan Penetapan RKAP" required value="{{ $dataEdit->rkap ?? old('rkap') }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tahun" class="form-label">Tahun</label>
+                        <select name="tahun" id="tahun" class="form-select">
+                            <option value="">Pilih Tahun</option>
+                            @php
+                            $currentYear = date('Y');
+                            @endphp
+                            @for ($year = $currentYear; $year >= 2000; $year--)
+                            <option value="{{ $year }}" @selected($dataEdit->tahun == $year)>{{ $year }}</option>
+                            @endfor
+                        </select>
                     </div>
                 </div>
 

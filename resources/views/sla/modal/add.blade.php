@@ -39,6 +39,18 @@
                         <label for="item" class="form-label">Penetapan RKAP <span class="text-danger">*</span></label>
                         <input type="number" name="rkap" id="rkap" class="form-control" placeholder="Masukkan Penetapan RKAP" required value="{{ old('rkap') }}" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="Kategori" class="form-label">Tahun</label>
+                        <select name="tahun" id="tahun" class="form-control select2">
+                            <option value="">Pilih Tahun</option>
+                            @php
+                            $currentYear = date('Y');
+                            @endphp
+                            @for ($year = $currentYear; $year >= 2000; $year--)
+                            <option value="{{ $year }}">{{ $year }}</option>
+                            @endfor
+                        </select>
+                    </div>
                 </div>
 
                 <div class="modal-footer">

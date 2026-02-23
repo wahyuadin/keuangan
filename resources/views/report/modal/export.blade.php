@@ -15,7 +15,7 @@
                     {{-- BRANCH --}}
                     <div class="mb-3">
                         <label class="form-label fw-bold">Branch</label>
-                        <select name="branch_id" class="form-select select2-modal" required>
+                        <select name="branch_id" class="form-select" required>
                             <option value="">-- Pilih Branch --</option>
                             @foreach(\App\Models\BranchOffice::orderBy('nama_branch')->get() as $b)
                             <option value="{{ $b->id }}">

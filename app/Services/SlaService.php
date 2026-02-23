@@ -20,7 +20,7 @@ class SlaService
                 'item_id' => $data['item_id'],
                 'sla_id' => $dataSLA->id,
                 'clinic_id' => $data['clinic_id'],
-                'tahun' => now()->format('Y'),
+                'tahun' => $data['tahun'],
                 'create_by' => Auth::user()->id,
             ]);
             DB::commit();
@@ -42,6 +42,12 @@ class SlaService
             $data = $request->except('_method', '_token');
             $data['create_by'] = Auth::user()->id;
             Sla::editData($id, $data);
+            Report::where('sla_id', $id)->update([
+                'item_id'   => $data['item_id'],
+                'clinic_id' => $data['clinic_id'],
+                'tahun'     => $data['tahun'],
+                'create_by' => Auth::user()->id,
+            ]);
             DB::commit();
             toastify()->success('Data Berhasil diedit.');
 

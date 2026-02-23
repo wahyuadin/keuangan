@@ -43,7 +43,6 @@ class ReportController extends Controller
         }
 
         $data = $query->orderBy('tahun', 'desc')->get();
-
         return view('report.index', compact('data'));
     }
 
