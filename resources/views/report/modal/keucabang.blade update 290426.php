@@ -99,31 +99,25 @@
 
             const months = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember'];
             $('#keu_id_branch').on('change', function() {
+
                 let branchId = $(this).val();
 
-                // 1. Kunci (disable) dropdown Klinik & Item, set text ke status Loading
-                $('#keu_id_clinic').prop('disabled', true).html('<option value="">Sedang memuat data...</option>').trigger('change');
-                $('#keu_id_item').prop('disabled', true).html('<option value="">-- Pilih Klinik Dahulu --</option>').trigger('change');
+                $('#keu_id_clinic').html('<option value="">Loading...</option>');
+                $('#keu_id_item').html('<option value="">-- Pilih Klinik Dahulu --</option>');
 
                 if (branchId) {
                     $.get("{{ route('server.branch-clinics', ':id') }}".replace(':id', branchId), function(data) {
+
                         let options = '<option value="">-- Pilih Klinik --</option>';
 
                         data.forEach(function(clinic) {
                             options += `<option value="${clinic.id}">
-                                            ${clinic.nama_klinik.toUpperCase()}
-                                        </option>`;
+                                        ${clinic.nama_klinik.toUpperCase()}
+                                    </option>`;
                         });
 
-                        // 2. Masukkan data, buka kembali kuncinya (enable), lalu trigger Select2
-                        $('#keu_id_clinic').html(options).prop('disabled', false).trigger('change');
-                    }).fail(function() {
-                        // Jaga-jaga jika server error/koneksi putus
-                        $('#keu_id_clinic').html('<option value="">Gagal memuat data</option>').prop('disabled', false).trigger('change');
+                        $('#keu_id_clinic').html(options).trigger('change');
                     });
-                } else {
-                    // Jika branch kembali ke state kosong (di-clear)
-                    $('#keu_id_clinic').prop('disabled', false).html('<option value="">-- Pilih Branch Dahulu --</option>').trigger('change');
                 }
             });
 
@@ -131,28 +125,24 @@
             // KLINIK -> ITEM (BERDASARKAN SLA)
             // ===============================
             $('#keu_id_clinic').on('change', function() {
+
                 let clinicId = $(this).val();
 
-                // 1. Kunci (disable) dropdown Item
-                $('#keu_id_item').prop('disabled', true).html('<option value="">Sedang memuat data...</option>').trigger('change');
+                $('#keu_id_item').html('<option value="">Loading...</option>');
 
                 if (clinicId) {
                     $.get("{{ route('server.clinic-items', ':id') }}".replace(':id', clinicId), function(data) {
+
                         let options = '<option value="">-- Pilih Item --</option>';
 
                         data.forEach(function(item) {
                             options += `<option value="${item.id}">
-                                            ${item.text}
-                                        </option>`;
+                                        ${item.text}
+                                    </option>`;
                         });
 
-                        // 2. Masukkan data dan buka kuncinya (enable)
-                        $('#keu_id_item').html(options).prop('disabled', false).trigger('change');
-                    }).fail(function() {
-                        $('#keu_id_item').html('<option value="">Gagal memuat data</option>').prop('disabled', false).trigger('change');
+                        $('#keu_id_item').html(options).trigger('change');
                     });
-                } else {
-                    $('#keu_id_item').prop('disabled', false).html('<option value="">-- Pilih Klinik Dahulu --</option>').trigger('change');
                 }
             });
 
@@ -175,8 +165,10 @@
                         , id_item
                         , tahun
                     }
-                    ,success: function(res) {
+                    , success: function(res) {
+
                         months.forEach(function(m) {
+
                             // RESET DEFAULT
                             $(`#keu_anggaran_${m}`).val('0');
                             $(`#keu_inp_real_${m}`).val('0').prop('readonly', false);
@@ -186,28 +178,23 @@
                             $(`#keu_status_text_${m}`).text('Belum Verif').removeClass('text-success fw-bold');
 
                             if (res.success && res.data) {
+
                                 let d = res.data;
-                                let anggaranVal = d[m] || 0;
-                                let realisasiVal = d[m + '_realisasi'];
 
-                                // 1. SET ANGGARAN
-                                $(`#keu_anggaran_${m}`).val(formatIDR(anggaranVal));
+                                // ANGARAN
+                                $(`#keu_anggaran_${m}`).val(formatIDR(d[m]));
 
-                                // 2. SET REALISASI (DUPLIKAT OTOMATIS)
-                                // Jika realisasi di DB kosong/0, TAPI anggaran ada nilainya, otomatis salin nilai anggaran
-                                if ((!realisasiVal || realisasiVal == 0) && anggaranVal > 0) {
-                                    $(`#keu_inp_real_${m}`).val(formatIDR(anggaranVal));
-                                } else {
-                                    // Jika sudah ada realisasi tersimpan, tampilkan nilai realisasinya
-                                    $(`#keu_inp_real_${m}`).val(formatIDR(realisasiVal));
-                                }
+                                // REALISASI
+                                $(`#keu_inp_real_${m}`).val(formatIDR(d[m + '_realisasi']));
 
                                 // KETERANGAN
                                 $(`#keu_inp_ket_${m}`).val(d[m + '_keterangan'] || '');
 
                                 // CEK VERIFIKASI
                                 let verifikator = d[m + '_verif_by'];
+
                                 if (verifikator) {
+
                                     $(`#keu_chk_verif_${m}`).prop('checked', true).prop('disabled', true);
                                     $(`#keu_verif_val_${m}`).val('1');
                                     $(`#keu_inp_real_${m}`).prop('readonly', true);
@@ -215,9 +202,9 @@
 
                                     $(`#keu_status_text_${m}`)
                                         .html(`<span class="text-success fw-bold">
-                                                <i class="bx bxs-check-shield"></i>
-                                                Terverif: ${verifikator}
-                                            </span>`);
+                                            <i class="bx bxs-check-shield"></i>
+                                            Terverif: ${verifikator}
+                                           </span>`);
                                 }
                             }
                         });

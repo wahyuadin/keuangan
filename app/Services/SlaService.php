@@ -16,22 +16,15 @@ class SlaService
             $data = $request->except('_method', '_token');
             $data['create_by'] = Auth::user()->id;
             $dataSLA = Sla::tambahData($data);
-            Report::tambahData([
-                'item_id' => $data['item_id'],
-                'sla_id' => $dataSLA->id,
-                'clinic_id' => $data['clinic_id'],
-                'tahun' => $data['tahun'],
-                'create_by' => Auth::user()->id,
-            ]);
+            $this->syncMonthlyReport($dataSLA);
+
             DB::commit();
             toastify()->success('Data Berhasil Ditambahkan.');
-
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
-            toastify()->error('Error, ' . $th);
-
-            return redirect()->back();
             DB::rollback();
+            toastify()->error('Error: ' . $th->getMessage());
+            return redirect()->back();
         }
     }
 
@@ -41,21 +34,19 @@ class SlaService
         try {
             $data = $request->except('_method', '_token');
             $data['create_by'] = Auth::user()->id;
-            Sla::editData($id, $data);
-            Report::where('sla_id', $id)->update([
-                'item_id'   => $data['item_id'],
-                'clinic_id' => $data['clinic_id'],
-                'tahun'     => $data['tahun'],
-                'create_by' => Auth::user()->id,
-            ]);
+
+            // 1. Edit Data SLA
+            $dataSLA = Sla::editData($id, $data);
+
+            // 2. Update atau Buat ulang Report terkait
+            $this->syncMonthlyReport($dataSLA);
+
             DB::commit();
             toastify()->success('Data Berhasil diedit.');
-
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
-            toastify()->error('Error, ' . $th);
             DB::rollback();
-
+            toastify()->error('Error: ' . $th->getMessage());
             return redirect()->back();
         }
     }
@@ -66,15 +57,52 @@ class SlaService
         try {
             Sla::hapusData($id);
             Report::where('sla_id', $id)->delete();
-            toastify()->success('Data Berhasil Dihapus.');
             DB::commit();
-
+            toastify()->success('Data Berhasil Dihapus.');
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
-            toastify()->error('Error, ' . $th);
-
-            return redirect()->back();
             DB::rollback();
+            toastify()->error('Error: ' . $th->getMessage());
+            return redirect()->back();
         }
+    }
+
+    private function syncMonthlyReport($sla)
+    {
+        $rkapTotal = $sla->rkap ?? 0;
+        $perBulan = round($rkapTotal / 12, 2);
+        $desember = round($rkapTotal - ($perBulan * 11), 2);
+
+        $months = [
+            'januari',
+            'februari',
+            'maret',
+            'april',
+            'mei',
+            'juni',
+            'juli',
+            'agustus',
+            'september',
+            'oktober',
+            'november'
+        ];
+
+        $payload = [
+            'item_id'   => $sla->item_id,
+            'clinic_id' => $sla->clinic_id,
+            'tahun'     => $sla->tahun,
+            'user_id'   => Auth::user()->id,
+            'create_by' => Auth::user()->id,
+            'desember'  => $desember,
+        ];
+
+        foreach ($months as $month) {
+            $payload[$month] = $perBulan;
+        }
+
+        return Report::updateOrCreate(
+            ['sla_id' => $sla->id],
+            $payload
+        );
     }
 }

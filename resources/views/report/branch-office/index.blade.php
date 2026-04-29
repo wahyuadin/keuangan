@@ -1,5 +1,6 @@
 @extends('template.app')
 @section('content')
+@include('report.branch-office.modal.export')
 <style>
     th {
         white-space: nowrap;
@@ -41,8 +42,8 @@
             <div class="mt-3 mb-4 d-flex justify-content-between align-items-end flex-wrap gap-2">
                 <div class="d-flex gap-2">
                     <div class="dropdown">
-                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class='bx bx-export'></i> Export
+                        <button type="button" class="btn btn-secondary flex-fill" data-bs-toggle="modal" data-bs-target="#modalExportBranch">
+                            <i class='bx bx-cloud-download me-1'></i> Export
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="javascript:void(0)" onclick="exportExcel()">Export Excel</a></li>

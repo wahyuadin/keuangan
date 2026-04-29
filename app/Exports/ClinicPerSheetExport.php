@@ -47,13 +47,18 @@ class ClinicPerSheetExport implements FromView, WithTitle, ShouldAutoSize, WithS
 
         $filteredBulan = array_slice($listBulan, $startIndex, ($endIndex - $startIndex + 1));
 
-        $reports = Report::with(['item.kategori', 'sla'])
-            ->where('clinic_id', $this->clinic->id)
-            ->where('tahun', $this->tahun)
-            ->get()
-            ->groupBy(function ($item) {
-                return $item->item->kategori->kategori ?? 'LAIN-LAIN';
-            });
+        if ($this->clinic) {
+            $reports = Report::with(['item.kategori', 'sla'])
+                ->where('clinic_id', $this->clinic->id ?? 0)
+                ->where('tahun', $this->tahun)
+                ->get()
+                ->groupBy(function ($item) {
+                    return $item->item->kategori->kategori ?? 'LAIN-LAIN';
+                });
+        } else {
+            $reports = [];
+        }
+
 
         return view('exports.report_clinic_excel', [
             'data'       => $reports,
@@ -72,7 +77,8 @@ class ClinicPerSheetExport implements FromView, WithTitle, ShouldAutoSize, WithS
 
     public function title(): string
     {
-        // Nama Sheet maksimal 31 karakter
-        return substr($this->clinic->nama_klinik, 0, 31);
+        $nama = $this->clinic->nama_klinik ?? 'Data Klinik';
+        $safeName = str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $nama);
+        return substr(trim($safeName), 0, 31);
     }
 }

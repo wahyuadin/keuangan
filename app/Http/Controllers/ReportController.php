@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ReportClinicExport;
+use App\Exports\ReportBranchExport;
+use App\Models\Branchoffice;
 use App\Models\Clinic;
 use App\Models\Report;
 use App\Models\Sla;
@@ -11,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
+
 
 class ReportController extends Controller
 {
@@ -225,7 +229,7 @@ class ReportController extends Controller
                 $realVal = str_replace(['Rp', '.', ' '], '', $request->{$m . '_realisasi'});
                 $realVal = $realVal ?: 0;
                 $report->{$m . '_realisasi'} = $realVal;
-                if ($realVal > 0) {
+                if ($request->input($m . '_verif') == '1' && $realVal > 0) {
                     $report->{$m . '_verif_by'} = Auth::user()->nama ?? 'Klinik Admin';
                 }
             }
@@ -234,12 +238,9 @@ class ReportController extends Controller
                     $request->{$m . '_keterangan'};
             }
         }
-
-        // dd($report->toArray());
         $report->save();
-
-        return redirect()->back()
-            ->with('success', 'Data Anggaran berhasil dikonsolidasi.');
+        toastify()->success('Success', 'Data Anggaran berhasil dikonsolidasi.');
+        return redirect()->back();
     }
 
     /**
@@ -286,6 +287,24 @@ class ReportController extends Controller
         return Excel::download(
             new ReportClinicExport($tahun, $branchId, [], $bulanAwal, $bulanAkhir),
             "Laporan_{$tahun}_{$bulanAwal}_sd_{$bulanAkhir}.xlsx"
+        );
+    }
+
+    // Di dalam ReportController.php
+    public function exportBranch(Request $request)
+    {
+        $tahun      = $request->tahun ?? date('Y');
+        $branchId   = $request->branch_id;
+        $bulanAwal  = $request->bulan_awal ?? 'januari';
+        $bulanAkhir = $request->bulan_akhir ?? 'desember';
+        if (empty($branchId)) {
+            toastify()->error('Error', 'Silakan pilih Branch terlebih dahulu untuk melakukan export.');
+            return redirect()->back();
+        }
+
+        return Excel::download(
+            new ReportBranchExport($tahun, $branchId, [], $bulanAwal, $bulanAkhir),
+            Str::upper(Branchoffice::find($branchId)->nama_branch) . "_{$tahun}_{$bulanAwal}_sd_{$bulanAkhir}.xlsx"
         );
     }
 }

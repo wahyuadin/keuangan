@@ -48,12 +48,9 @@ class ReportClinicExport implements WithMultipleSheets
         $clinics = $query->orderBy('nama_klinik', 'asc')->get();
 
         if ($clinics->isEmpty()) {
-            return [new ClinicPerSheetExport(
-                $this->tahun,
-                null,
-                $this->bulanAwal,
-                $this->bulanAkhir
-            )];
+            $dummyClinic = new Clinic();
+            $dummyClinic->nama_klinik = 'KLINIK NAYAKA HUSADA';
+            return [new ClinicPerSheetExport($this->tahun, $dummyClinic)];
         }
 
         foreach ($clinics as $clinic) {

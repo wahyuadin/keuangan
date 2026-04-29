@@ -76,6 +76,7 @@
 </style>
 @endpush
 
+<!-- Loading Overlay -->
 <div id="loading-overlay" class="d-none" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
     <div class="text-center">
         <div class="spinner-border text-primary" role="status"></div>
@@ -86,6 +87,7 @@
 <div class="container-fluid mt-4">
     <div class="card shadow-sm border-0 w-100" style="border-radius: 1rem; background-color: #ffffff;">
         <div class="card-body p-4">
+            <!-- Header & Tombol Tambah -->
             <div class="row align-items-center mb-4">
                 <div class="col-md-7">
                     <h4 class="fw-bold mb-1 text-dark"><i class='bx bx-bar-chart-square text-primary me-2'></i>Monitoring Report Klinik</h4>
@@ -103,6 +105,7 @@
                 </div>
             </div>
 
+            <!-- Toolbar & Filter Section -->
             <div class="border rounded-4 p-3 mb-4 bg-light shadow-sm border-0">
                 <form method="GET" class="row g-3 align-items-end">
 
@@ -158,6 +161,7 @@
                 </form>
             </div>
 
+            <!-- Tabel Monitoring -->
             <div class="table-responsive">
                 <table id="tableReport" class="table table-hover align-middle w-100" style="font-size: 0.825rem; border: 1px solid #e2e8f0;">
                     @include('alert')
@@ -204,17 +208,10 @@
                         @php
                         $row_angg = 0; $row_real = 0;
                         foreach($listBulan as $m) {
-                            $v_angg = (float)str_replace(['Rp', '.', ','], ['', '', ''], $item->$m ?? 0);
-
-                            // CEK STATUS VERIFIKASI UNTUK TOTAL AKUMULASI (BARIS)
-                            $is_verif_row = $item->{$m.'_verif_by'} ? true : false;
-                            $v_real_raw = (float)str_replace(['Rp', '.', ','], ['', '', ''], $item->{$m.'_realisasi'} ?? 0);
-
-                            // Jika sudah verif masukkan nilai asli, jika belum anggap 0
-                            $v_real = $is_verif_row ? $v_real_raw : 0;
-
-                            $row_angg += $v_angg;
-                            $row_real += $v_real;
+                        $v_angg = (float)str_replace(['Rp', '.', ','], ['', '', ''], $item->$m ?? 0);
+                        $v_real = (float)str_replace(['Rp', '.', ','], ['', '', ''], $item->{$m.'_realisasi'} ?? 0);
+                        $row_angg += $v_angg;
+                        $row_real += $v_real;
                         }
                         $row_slsh = $row_angg - $row_real;
                         $grand_angg += $row_angg; $grand_real += $row_real; $grand_slsh += $row_slsh;
@@ -232,26 +229,12 @@
                             @foreach ($listBulan as $m)
                             @php
                             $a = (float)str_replace(['Rp', '.', ','], ['', '', ''], $item->$m ?? 0);
-                            $is_v = $item->{$m.'_verif_by'} ? true : false;
-
-                            // CEK STATUS VERIFIKASI UNTUK KOLOM PER BULAN
-                            $r_raw = (float)str_replace(['Rp', '.', ','], ['', '', ''], $item->{$m.'_realisasi'} ?? 0);
-
-                            // Jika sudah verif masukkan nilai asli, jika belum anggap 0
-                            $r = $is_v ? $r_raw : 0;
-
+                            $r = (float)str_replace(['Rp', '.', ','], ['', '', ''], $item->{$m.'_realisasi'} ?? 0);
                             $s = $a - $r;
+                            $is_v = $item->{$m.'_verif_by'} ? true : false;
                             @endphp
                             <td class="text-end border-start">Rp {{ number_format($a, 0, ',', '.') }}</td>
-
-                            {{-- PENYESUAIAN TAMPILAN REALISASI --}}
-                            <td class="text-end" {!! (!$is_v && $r_raw > 0) ? 'title="Menunggu Verifikasi (Input: '.number_format($r_raw, 0, ',', '.').')"' : '' !!}>
-                                @if(!$is_v && $r_raw > 0)
-                                    <span class="text-warning me-1" style="font-size: 0.75rem;"><i class='bx bx-time'></i></span>
-                                @endif
-                                Rp {{ number_format($r, 0, ',', '.') }}
-                            </td>
-
+                            <td class="text-end">Rp {{ number_format($r, 0, ',', '.') }}</td>
                             <td class="text-end fw-bold {{ $s < 0 ? 'text-danger' : 'text-success' }}">
                                 {{ number_format($s, 0, ',', '.') }}
                             </td>
@@ -300,6 +283,7 @@
     </div>
 </div>
 
+<!-- Modal Includes -->
 @include('report.modal.ppk')
 @include('report.modal.keucabang')
 @include('report.modal.edit')
@@ -437,6 +421,19 @@
         });
 
     });
+
+    function exportExcel() {
+
+        $('#loading-overlay').removeClass('d-none');
+
+        let params = $('#filterForm').serialize();
+
+        window.location.href = "{{ route('export.clinic') }}?" + params;
+
+        setTimeout(() => {
+            $('#loading-overlay').addClass('d-none');
+        }, 2000);
+    }
 
 </script>
 @endpush
