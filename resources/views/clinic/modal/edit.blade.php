@@ -17,7 +17,7 @@
                         <select name="branch_id" id="branch_id" class="form-select" required>
                             <option value="" disabled selected>Pilih Branch Office</option>
                             @php
-                            $branchOffices = \App\Models\BranchOffice::showData();
+                            $branchOffices = \App\Models\Branchoffice::showData();
                             @endphp
                             @foreach($branchOffices as $branch)
                             <option value="{{ $branch->id }}" {{ $dataEdit->branch_id == $branch->id ? 'selected' : '' }}>
