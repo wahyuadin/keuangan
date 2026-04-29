@@ -111,7 +111,7 @@
                         <label class="form-label fw-semibold small text-secondary">Branch</label>
                         <select name="branch_id" id="filter_branch" class="form-select">
                             <option value="">-- Semua Branch --</option>
-                            @foreach(\App\Models\BranchOffice::orderBy('nama_branch')->get() as $b)
+                            @foreach(\app\Models\BranchOffice::orderBy('nama_branch')->get() as $b)
                             <option value="{{ $b->id }}" {{ request('branch_id') == $b->id ? 'selected' : '' }}>
                                 {{ strtoupper($b->nama_branch) }}
                             </option>
