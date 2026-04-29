@@ -18,7 +18,7 @@
                         <select name="branch_id" class="form-select" required>
                             <option value="">-- Pilih Branch --</option>
                             @if(auth()->user()->branch_id == null)
-                            @foreach(\App\Models\BranchOffice::orderBy('nama_branch')->get() as $b)
+                            @foreach(\App\Models\Branchoffice::orderBy('nama_branch')->get() as $b)
                             <option value="{{ $b->id }}">
                                 {{ strtoupper($b->nama_branch) }}
                             </option>
