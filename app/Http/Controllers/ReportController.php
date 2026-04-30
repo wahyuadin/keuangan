@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ReportClinicExport;
 use App\Exports\ReportBranchExport;
+use App\Exports\ReportClinicExport;
 use App\Models\Branchoffice;
 use App\Models\Clinic;
 use App\Models\Report;
@@ -12,9 +12,8 @@ use App\Services\ReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -47,6 +46,7 @@ class ReportController extends Controller
         }
 
         $data = $query->orderBy('tahun', 'desc')->get();
+
         return view('report.index', compact('data'));
     }
 
@@ -54,8 +54,8 @@ class ReportController extends Controller
     {
         $request->validate([
             'id_clinic' => 'required',
-            'id_item'   => 'required',
-            'tahun'     => 'required',
+            'id_item' => 'required',
+            'tahun' => 'required',
         ]);
 
         $data = Report::where('clinic_id', $request->id_clinic)
@@ -63,17 +63,16 @@ class ReportController extends Controller
             ->where('tahun', $request->tahun)
             ->first();
 
-
         if ($data) {
             return response()->json([
                 'success' => true,
-                'data'    => $data
+                'data' => $data,
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Data tidak ditemukan'
+            'message' => 'Data tidak ditemukan',
         ]);
     }
 
@@ -94,7 +93,7 @@ class ReportController extends Controller
                     'id' => $sla->item->id,
                     'text' => strtoupper($sla->item->item),
                     'sla_id' => $sla->id,
-                    'rkap' => $sla->rkap
+                    'rkap' => $sla->rkap,
                 ];
             });
     }
@@ -112,22 +111,22 @@ class ReportController extends Controller
     public function approveHeadOffice(Request $request)
     {
         $request->validate([
-            'item_id'       => 'required',
-            'month'         => 'required|string',
-            'tahun'         => 'required',
-            'realisasi_ho'  => 'nullable|numeric|min:0',
+            'item_id' => 'required',
+            'month' => 'required|string',
+            'tahun' => 'required',
+            'realisasi_ho' => 'nullable|numeric|min:0',
             'keterangan_ho' => 'nullable|string',
         ]);
 
-        $month  = strtolower($request->month);
+        $month = strtolower($request->month);
         $itemId = $request->item_id;
-        $tahun  = $request->tahun;
+        $tahun = $request->tahun;
 
         // Tentukan nama kolom dinamis
-        $colVerifClinic = $month . '_verif_by';      // Syarat (harus sudah verif klinik)
-        $colVerifHO     = $month . '_verif_by_ho';   // Target Update User
-        $colRealHO      = $month . '_realisasi_by_ho'; // Target Update Angka
-        $colKetHO       = $month . '_keterangan_by_ho'; // Target Update Text
+        $colVerifClinic = $month.'_verif_by';      // Syarat (harus sudah verif klinik)
+        $colVerifHO = $month.'_verif_by_ho';   // Target Update User
+        $colRealHO = $month.'_realisasi_by_ho'; // Target Update Angka
+        $colKetHO = $month.'_keterangan_by_ho'; // Target Update Text
 
         try {
             DB::beginTransaction();
@@ -145,9 +144,8 @@ class ReportController extends Controller
             Report::whereIn('id', $validReports->pluck('id'))
                 ->update([
                     $colVerifHO => Auth::user()->nama ?? Auth::user()->name ?? 'HO Admin',
-                    $colKetHO   => $request->keterangan_ho
+                    $colKetHO => $request->keterangan_ho,
                 ]);
-
 
             // a. Reset kolom realisasi HO jadi 0 untuk semua baris item ini
             Report::whereIn('id', $validReports->pluck('id'))->update([$colRealHO => 0]);
@@ -161,15 +159,16 @@ class ReportController extends Controller
                 // GUNAKAN query langsung ke ID agar memaksa update ke database:
 
                 Report::where('id', $validReports->first()->id)->update([
-                    $colRealHO => $inputRealisasi
+                    $colRealHO => $inputRealisasi,
                 ]);
             }
             DB::commit();
 
-            return redirect()->back()->with('success', "Berhasil memverifikasi dan menyimpan koreksi HO untuk bulan " . ucfirst($month) . ".");
+            return redirect()->back()->with('success', 'Berhasil memverifikasi dan menyimpan koreksi HO untuk bulan '.ucfirst($month).'.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal melakukan verifikasi: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Gagal melakukan verifikasi: '.$e->getMessage());
         }
     }
 
@@ -188,8 +187,8 @@ class ReportController extends Controller
     {
         $request->validate([
             'clinic_id' => 'required',
-            'item_id'   => 'required',
-            'tahun'     => 'required',
+            'item_id' => 'required',
+            'tahun' => 'required',
         ]);
 
         $months = [
@@ -204,14 +203,14 @@ class ReportController extends Controller
             'september',
             'oktober',
             'november',
-            'desember'
+            'desember',
         ];
 
         $report = Report::updateOrCreate(
             [
                 'clinic_id' => $request->clinic_id,
-                'item_id'   => $request->item_id,
-                'tahun'     => $request->tahun,
+                'item_id' => $request->item_id,
+                'tahun' => $request->tahun,
             ],
             [
                 'create_by' => Auth::id(),
@@ -224,22 +223,23 @@ class ReportController extends Controller
                 $report->$m = $val ?: 0;
             }
             // Realisasi
-            if ($request->filled($m . '_realisasi')) {
+            if ($request->filled($m.'_realisasi')) {
 
-                $realVal = str_replace(['Rp', '.', ' '], '', $request->{$m . '_realisasi'});
+                $realVal = str_replace(['Rp', '.', ' '], '', $request->{$m.'_realisasi'});
                 $realVal = $realVal ?: 0;
-                $report->{$m . '_realisasi'} = $realVal;
-                if ($request->input($m . '_verif') == '1' && $realVal > 0) {
-                    $report->{$m . '_verif_by'} = Auth::user()->nama ?? 'Klinik Admin';
+                $report->{$m.'_realisasi'} = $realVal;
+                if ($request->input($m.'_verif') == '1' && $realVal > 0) {
+                    $report->{$m.'_verif_by'} = Auth::user()->nama ?? 'Klinik Admin';
                 }
             }
-            if ($request->has($m . '_keterangan')) {
-                $report->{$m . '_keterangan'} =
-                    $request->{$m . '_keterangan'};
+            if ($request->has($m.'_keterangan')) {
+                $report->{$m.'_keterangan'} =
+                    $request->{$m.'_keterangan'};
             }
         }
         $report->save();
-        toastify()->success('Success', 'Data Anggaran berhasil dikonsolidasi.');
+        toastify()->success('Data Anggaran berhasil dikonsolidasi.');
+
         return redirect()->back();
     }
 
@@ -275,13 +275,12 @@ class ReportController extends Controller
         return $this->report->hapus($id);
     }
 
-
     // export
     public function exportClinic(Request $request)
     {
-        $tahun      = $request->tahun ?? date('Y');
-        $branchId   = $request->branch_id;
-        $bulanAwal  = $request->bulan_awal ?? 'januari';
+        $tahun = $request->tahun ?? date('Y');
+        $branchId = $request->branch_id;
+        $bulanAwal = $request->bulan_awal ?? 'januari';
         $bulanAkhir = $request->bulan_akhir ?? 'desember';
 
         return Excel::download(
@@ -293,18 +292,19 @@ class ReportController extends Controller
     // Di dalam ReportController.php
     public function exportBranch(Request $request)
     {
-        $tahun      = $request->tahun ?? date('Y');
-        $branchId   = $request->branch_id;
-        $bulanAwal  = $request->bulan_awal ?? 'januari';
+        $tahun = $request->tahun ?? date('Y');
+        $branchId = $request->branch_id;
+        $bulanAwal = $request->bulan_awal ?? 'januari';
         $bulanAkhir = $request->bulan_akhir ?? 'desember';
         if (empty($branchId)) {
             toastify()->error('Error', 'Silakan pilih Branch terlebih dahulu untuk melakukan export.');
+
             return redirect()->back();
         }
 
         return Excel::download(
             new ReportBranchExport($tahun, $branchId, [], $bulanAwal, $bulanAkhir),
-            Str::upper(Branchoffice::find($branchId)->nama_branch) . "_{$tahun}_{$bulanAwal}_sd_{$bulanAkhir}.xlsx"
+            Str::upper(Branchoffice::find($branchId)->nama_branch)."_{$tahun}_{$bulanAwal}_sd_{$bulanAkhir}.xlsx"
         );
     }
 }

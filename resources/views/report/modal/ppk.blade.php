@@ -181,13 +181,18 @@
                                 status.html('<span class="badge bg-secondary">Baru</span>');
 
                                 if (res && res.success && res.data) {
+                                    let budgetVal = res.data[m];
+                                    let isVerif = res.data[m + '_verif_by'];
+                                    input.val(formatIDR(budgetVal));
 
-                                    input.val(formatIDR(res.data[m]));
-
-                                    if (res.data[m] && res.data[m] != 0) {
+                                    if (isVerif) {
                                         input.attr('readonly', true);
                                         row.addClass('table-secondary text-muted');
-                                        status.html('<span class="badge bg-primary">Tersimpan</span>');
+                                        status.html('<span class="badge bg-success" title="Dikunci oleh ' + isVerif + '"><i class="bx bx-lock"></i> Terkunci</span>');
+                                    } else if (budgetVal && budgetVal != 0) {
+                                        input.attr('readonly', false);
+                                        row.removeClass('table-secondary text-muted');
+                                        status.html('<span class="badge bg-primary"><i class="bx bx-edit"></i> Bisa Diedit</span>');
                                     }
                                 }
                             });
