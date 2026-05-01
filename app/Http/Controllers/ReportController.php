@@ -239,7 +239,7 @@ class ReportController extends Controller
             }
         }
         $report->save();
-        toastify()->success('Success', 'Data Anggaran berhasil dikonsolidasi.');
+        toastify()->success('Success! Data Anggaran berhasil dikonsolidasi.');
         return redirect()->back();
     }
 
