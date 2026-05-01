@@ -20,10 +20,12 @@ class SlaService
 
             DB::commit();
             toastify()->success('Data Berhasil Ditambahkan.');
+
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
             DB::rollback();
-            toastify()->error('Error: ' . $th->getMessage());
+            toastify()->error('Error: '.$th->getMessage());
+
             return redirect()->back();
         }
     }
@@ -43,10 +45,12 @@ class SlaService
 
             DB::commit();
             toastify()->success('Data Berhasil diedit.');
+
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
             DB::rollback();
-            toastify()->error('Error: ' . $th->getMessage());
+            toastify()->error('Error: '.$th->getMessage());
+
             return redirect()->back();
         }
     }
@@ -59,10 +63,12 @@ class SlaService
             Report::where('sla_id', $id)->delete();
             DB::commit();
             toastify()->success('Data Berhasil Dihapus.');
+
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
             DB::rollback();
-            toastify()->error('Error: ' . $th->getMessage());
+            toastify()->error('Error: '.$th->getMessage());
+
             return redirect()->back();
         }
     }
@@ -70,8 +76,8 @@ class SlaService
     private function syncMonthlyReport($sla)
     {
         $rkapTotal = $sla->rkap ?? 0;
-        $perBulan = round($rkapTotal / 12, 2);
-        $desember = round($rkapTotal - ($perBulan * 11), 2);
+        $perBulan = floor($rkapTotal / 12);
+        $desember = $rkapTotal - ($perBulan * 11);
 
         $months = [
             'januari',
@@ -84,16 +90,16 @@ class SlaService
             'agustus',
             'september',
             'oktober',
-            'november'
+            'november',
         ];
 
         $payload = [
-            'item_id'   => $sla->item_id,
+            'item_id' => $sla->item_id,
             'clinic_id' => $sla->clinic_id,
-            'tahun'     => $sla->tahun,
-            'user_id'   => Auth::user()->id,
+            'tahun' => $sla->tahun,
+            'user_id' => Auth::user()->id,
             'create_by' => Auth::user()->id,
-            'desember'  => $desember,
+            'desember' => $desember,
         ];
 
         foreach ($months as $month) {
