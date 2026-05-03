@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\BugReportController;
 use App\Http\Controllers\ClinicController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RkapController;
 use App\Http\Controllers\SlaController;
@@ -20,10 +22,13 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('clinic', ClinicController::class);
         Route::resource('rkap', RkapController::class);
         Route::resource('sla', SlaController::class);
+        Route::resource('notification', NotificationController::class);
         Route::resource('user-data', UserDataController::class);
+        Route::delete('user-data.bulk-delete', [UserDataController::class, 'bulkDelete'])->name('user-data.bulk-delete');
     });
     Route::resource('report-clinic', ReportController::class);
     Route::get('report-branch', [ReportController::class, 'branch'])->name('report.branch');
+    Route::resource('bug-report', BugReportController::class);
     Route::get('audit', [Controller::class, 'auditable'])->name('audit');
     Route::prefix('report-ho')->group(function () {
         Route::get('/', [ReportController::class, 'headOffice'])->name('report.ho');

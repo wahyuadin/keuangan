@@ -50,8 +50,7 @@
                                 <th>Username</th>
                                 <th>Is Active</th>
                                 <th>Role</th>
-                                <th>Perusahaan</th>
-                                <th>Klinik</th>
+                                <th>Branch Office</th>
                                 <th>Image</th>
                                 <th>Action</th>
                             </tr>
@@ -78,11 +77,13 @@
                                 <td>
                                     @if (isset($datas->role))
                                     @if ($datas->role == 0)
-                                    <span class="badge bg-primary">HRD</span>
+                                    <span class="badge bg-primary">HUB PPK Cabang</span>
                                     @elseif($datas->role == 1)
-                                    <span class="badge bg-info">Admin Klinik</span>
+                                    <span class="badge bg-info">Keuangan Cabang</span>
                                     @elseif($datas->role == 2)
-                                    <span class="badge bg-danger">Super Admin</span>
+                                    <span class="badge bg-danger">Keuangan Pusat</span>
+                                    @elseif($datas->role == 3)
+                                    <span class="badge bg-success">Keuangan Head Office</span>
                                     @else
                                     <span class="badge bg-secondary">{{ $datas->role }}</span>
                                     @endif
@@ -91,10 +92,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    {{ Str::upper($datas->customer->nama_perusahaan ?? '-') ?? '-' }}
-                                </td>
-                                <td>
-                                    {{ Str::upper($datas->clinic->nama_klinik ?? '-') ?? '-' }}
+                                    {{ Str::upper($datas->branch->nama_branch ?? '-') ?? '-' }}
                                 </td>
                                 <td>
                                     @if ($datas->avatar != 'default.png')
@@ -104,12 +102,10 @@
                                     @endif
                                 </td>
                                 <td class="d-flex flex-column flex-sm-row gap-2">
-                                    @if ($datas->role != 2)
                                     <button type="button" data-bs-toggle="modal" data-bs-target="#editData{{ $datas->id }}" class="btn btn-warning btn-sm bx bx-edit" title="Edit">
                                     </button>
                                     <button type="button" data-bs-toggle="modal" data-bs-target="#hapusData{{ $datas->id }}" class="btn btn-danger btn-sm bx bx-trash" title="Edit">
                                     </button>
-                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -121,8 +117,8 @@
 </div>
 </div>
 @include('user-data.add')
-@include('user-data.edit')
-@include('user-data.import')
+{{-- @include('user-data.edit') --}}
+{{-- @include('user-data.import') --}}
 @include('user-data.delete')
 @push('style')
 {{-- datatable --}}
@@ -331,23 +327,6 @@
             , width: '100%'
         });
     });
-
-    function toggleClinicField() {
-        var role = $('#roleSelect').val();
-        if (role == '0') {
-            $('#perusahaanfield').show();
-            $('#clinicfield').hide();
-        } else if (role == '1') {
-            $('#clinicfield').show();
-            $('#perusahaanfield').hide();
-        } else {
-            $('#clinicfield').hide();
-            $('#perusahaanfield').hide();
-        }
-    }
-
-    $('#roleSelect').on('change', toggleClinicField);
-    toggleClinicField();
 
     function togglePassword(fieldId, btn) {
         const input = document.getElementById(fieldId);

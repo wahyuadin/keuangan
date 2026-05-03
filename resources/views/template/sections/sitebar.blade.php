@@ -8,7 +8,7 @@
 
     <div class="menu-inner-shadow"></div>
     <ul class="menu-inner py-1">
-        @if(Auth::user()->role == 4)
+        @if(Auth::user()->role == 3)
         <li class="menu-item {{ Request::is('/') ? 'active' : '' }}">
             <a href="{{ url('/') }}" class="menu-link">
                 <i class="menu-icon tf-icons fa-solid fa-house-chimney"></i>
@@ -16,64 +16,84 @@
             </a>
         </li>
         @endif
-        <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Master</span>
-        </li>
-        <li class="menu-item {{ Request::is('master/kategori*') ? 'active' : '' }}">
-            <a href="{{ route('kategori.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons fa-solid fa-tags"></i>
-                <div data-i18n="kategori">Kategori</div>
-            </a>
-        </li>
-        <li class="menu-item {{ Request::is('master/item*') ? 'active' : '' }}">
-            <a href="{{ route('item.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons fa-solid fa-boxes"></i>
-                <div data-i18n="item">Item</div>
-            </a>
-        </li>
-        <li class="menu-item {{ Request::is('master/sla*') ? 'active' : '' }}">
-            <a href="{{ route('sla.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons fa-solid fa-calculator"></i>
-                <div data-i18n="item">Service Level Agreement</div>
-            </a>
-        </li>
-        <li class="menu-item {{ Request::is('master/branch-office*') ? 'active' : '' }}">
-            <a href="{{ route('branch-office.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons fa-solid fa-code-branch"></i>
-                <div data-i18n="Analytics">Branch Office</div>
-            </a>
-        </li>
-        <li class="menu-item {{ Request::is('master/clinic*') ? 'active' : '' }}">
-            <a href="{{ route('clinic.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons fa-solid fa-hospital"></i>
-                <div data-i18n="Klinik">Klinik</div>
-            </a>
-        </li>
-        <li class="menu-item {{ Request::is('master/user*') ? 'active' : '' }}">
-            <a href="{{ route('user-data.index') }}" class="menu-link">
-                <i class="menu-icon tf-icons fa-solid fa-users"></i>
-                <div data-i18n="Analytics">User</div>
-            </a>
-        </li>
+        @if(in_array(Auth::user()->role, [0,2,3,4]))
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Master</span>
+            </li>
+            <li class="menu-item {{ Request::is('master/kategori*') ? 'active' : '' }}">
+                <a href="{{ route('kategori.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons fa-solid fa-tags"></i>
+                    <div data-i18n="kategori">Kategori</div>
+                </a>
+            </li>
+            <li class="menu-item {{ Request::is('master/item*') ? 'active' : '' }}">
+                <a href="{{ route('item.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons fa-solid fa-boxes"></i>
+                    <div data-i18n="item">Item</div>
+                </a>
+            </li>
+            <li class="menu-item {{ Request::is('master/sla*') ? 'active' : '' }}">
+                <a href="{{ route('sla.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons fa-solid fa-calculator"></i>
+                    <div data-i18n="item">Service Level Agreement</div>
+                </a>
+            </li>
+            <li class="menu-item {{ Request::is('master/clinic*') ? 'active' : '' }}">
+                <a href="{{ route('clinic.index') }}" class="menu-link">
+                    <i class="menu-icon tf-icons fa-solid fa-hospital"></i>
+                    <div data-i18n="Klinik">Klinik</div>
+                </a>
+            </li>
+            @if(in_array(Auth::user()->role, [2, 3])) {{-- Role Keuangan Ho / Superadmin --}}
+                <li class="menu-item {{ Request::is('master/branch-office*') ? 'active' : '' }}">
+                    <a href="{{ route('branch-office.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons fa-solid fa-code-branch"></i>
+                        <div data-i18n="Analytics">Branch Office</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('master/notification*') ? 'active' : '' }}">
+                    <a href="{{ route('notification.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons fa-solid fa-bell"></i>
+                        <div data-i18n="Analytics">Notification</div>
+                    </a>
+                </li>
+                <li class="menu-item {{ Request::is('master/user*') ? 'active' : '' }}">
+                    <a href="{{ route('user-data.index') }}" class="menu-link">
+                        <i class="menu-icon tf-icons fa-solid fa-users"></i>
+                        <div data-i18n="Analytics">User</div>
+                    </a>
+                </li>
+            @endif
+        @endif
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">On Board</span>
         </li>
+        @if(in_array(Auth::user()->role, [2, 3])) {{-- Keuangan dan Superadmin --}}
         <li class="menu-item {{ Request::is('report-ho') ? 'active' : '' }}">
             <a href="{{ route('report.ho') }}" class="menu-link">
                 <i class="menu-icon tf-icons fa-solid fa-file-lines"></i>
                 <div data-i18n="Analytics">Konsolidasi Head Office</div>
             </a>
         </li>
+        @endif
+        @if(in_array(Auth::user()->role, [1, 2, 3])) {{-- PPK / Keuangan Cabang / Keuangan Ho / Superadmin --}}
         <li class="menu-item {{ Request::is('report-branch') ? 'active' : '' }}">
             <a href="{{ route('report.branch') }}" class="menu-link">
                 <i class="menu-icon tf-icons fa-solid fa-file-lines"></i>
                 <div data-i18n="Analytics">Konsolidasi Cabang</div>
             </a>
         </li>
+        @endif
         <li class="menu-item {{ Request::is('report-clinic') ? 'active' : '' }}">
             <a href="{{ route('report-clinic.index') }}" class="menu-link">
                 <i class="menu-icon tf-icons fa-solid fa-hospital"></i>
                 <div data-i18n="Analytics">Konsolidasi Klinik</div>
+            </a>
+        </li>
+        <li class="menu-item {{ Request::is('bug-report*') ? 'active' : '' }}">
+            <a href="{{ route('bug-report.index') }}" class="menu-link">
+                <i class="menu-icon tf-icons fa-solid fa-comments"></i>
+                <div data-i18n="Analytics">Kritik & Saran</div>
             </a>
         </li>
     </ul>

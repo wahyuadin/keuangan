@@ -40,9 +40,7 @@
                             <th>Kategori</th>
                             <th>Update By</th>
                             <th>Created At</th>
-                            @if(Auth::user()->role == '2')
                             <th>Action</th>
-                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -55,18 +53,18 @@
                             @endphp
                             <td>{{ Str::upper($user->nama ?? '-') }}</td>
                             <td>{{ Str::upper($dataItem->updated_at ?? '-') }}</td>
-                            @if(Auth::user()->role == '2')
                             <td>
                                 <div class="d-flex gap-1">
                                     <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-kategori{{ $dataItem->id }}">
                                         Edit
                                     </button>
+                                    @if(in_array(Auth::user()->role, [2, 3])) {{-- Role Keuangan Ho / Superadmin --}}
                                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-kategori{{ $dataItem->id }}">
                                         Delete
                                     </button>
+                                    @endif
                                 </div>
                             </td>
-                            @endif
                         </tr>
                         @endforeach
                     </tbody>

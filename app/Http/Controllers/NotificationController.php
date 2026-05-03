@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Services\UserService;
+use App\Models\Notification;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 
-class UserDataController extends Controller
+class NotificationController extends Controller
 {
-    protected $user;
+    protected $notification;
 
-    public function __construct(UserService $user)
+    public function __construct(NotificationService $notification)
     {
-        $this->user = $user;
+        $this->notification = $notification;
     }
-
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        return view('user-data.index', [
-            'data' => User::showData(),
-        ]);
+        return view('notification.index', ['data' => Notification::showData()]);
     }
 
     /**
@@ -35,8 +35,11 @@ class UserDataController extends Controller
      */
     public function store(Request $request)
     {
-        $this->user->tambah($request);
-        return redirect()->back();
+        $request->validate([
+            'title' => 'required',
+            'message' => 'required',
+        ]);
+        return $this->notification->tambah($request);
     }
 
     /**
@@ -60,7 +63,12 @@ class UserDataController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'message' => 'required',
+        ]);
+
+        return $this->notification->edit($id, $request);
     }
 
     /**
@@ -68,7 +76,6 @@ class UserDataController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->user->hapus($id);
-        return redirect()->back();
+        return $this->notification->hapus($id);
     }
 }

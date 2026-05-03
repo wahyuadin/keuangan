@@ -4,7 +4,6 @@
             <i class="bx bx-menu bx-sm"></i>
         </a>
     </div>
-
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- User -->
@@ -34,9 +33,9 @@
                                 <span class="fw-semibold d-block">{{ ucwords(Auth::user()->nama) }}</span>
                                 <small class="text-muted">
                                     @if(Auth::user()->role == 0)
-                                    HRD {{ Str::upper(Auth::user()->customer->nama_perusahaan ?? '-') }}
+                                        Hub PPK {{ Auth::user()->branch->nama_branch ?? '-' }}
                                     @elseif(Auth::user()->role == 1)
-                                    {{ Auth::user()->clinic->nama_klinik ?? '-' }}
+                                        Keuangan Cabang {{ Auth::user()->branch->nama_branch ?? '-' }}
                                     @elseif(Auth::user()->role == 2)
                                     Super User
                                     @endif

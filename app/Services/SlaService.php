@@ -24,7 +24,7 @@ class SlaService
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
             DB::rollback();
-            toastify()->error('Error: '.$th->getMessage());
+            toastify()->error('Error: ' . $th->getMessage());
 
             return redirect()->back();
         }
@@ -49,7 +49,7 @@ class SlaService
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
             DB::rollback();
-            toastify()->error('Error: '.$th->getMessage());
+            toastify()->error('Error: ' . $th->getMessage());
 
             return redirect()->back();
         }
@@ -67,7 +67,7 @@ class SlaService
             return redirect()->route('sla.index');
         } catch (\Throwable $th) {
             DB::rollback();
-            toastify()->error('Error: '.$th->getMessage());
+            toastify()->error('Error: ' . $th->getMessage());
 
             return redirect()->back();
         }
@@ -76,34 +76,32 @@ class SlaService
     private function syncMonthlyReport($sla)
     {
         $rkapTotal = $sla->rkap ?? 0;
-        $perBulan = floor($rkapTotal / 12);
-        $desember = $rkapTotal - ($perBulan * 11);
 
         $months = [
-            'januari',
-            'februari',
-            'maret',
-            'april',
-            'mei',
-            'juni',
-            'juli',
-            'agustus',
-            'september',
-            'oktober',
-            'november',
+            1 => 'januari',
+            2 => 'februari',
+            3 => 'maret',
+            4 => 'april',
+            5 => 'mei',
+            6 => 'juni',
+            7 => 'juli',
+            8 => 'agustus',
+            9 => 'september',
+            10 => 'oktober',
+            11 => 'november',
+            12 => 'desember',
         ];
 
         $payload = [
-            'item_id' => $sla->item_id,
+            'item_id'   => $sla->item_id,
             'clinic_id' => $sla->clinic_id,
-            'tahun' => $sla->tahun,
-            'user_id' => Auth::user()->id,
-            'create_by' => Auth::user()->id,
-            'desember' => $desember,
+            'tahun'     => $sla->tahun,
+            'user_id'   => Auth::id(),
+            'create_by' => Auth::id(),
         ];
 
-        foreach ($months as $month) {
-            $payload[$month] = $perBulan;
+        foreach ($months as $number => $month) {
+            $payload[$month] = (int) round(($rkapTotal * $number) / 12);
         }
 
         return Report::updateOrCreate(

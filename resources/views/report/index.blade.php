@@ -92,10 +92,12 @@
                     <p class="text-muted mb-0">Pemantauan realisasi anggaran dan verifikasi keuangan unit klinik.</p>
                 </div>
                 <div class="col-md-5 text-end d-flex justify-content-end gap-2">
-                    @if(Auth::user()->role == '2') {{-- Role PPK / HUB --}}
+                    @if(in_array(Auth::user()->role, [0, 2, 3])) {{-- Role PPK / HUB --}}
                     <button type="button" class="btn btn-primary shadow-sm px-3" data-bs-toggle="modal" data-bs-target="#addReportPPK">
                         <i class='bx bx-plus me-1'></i> Anggaran
                     </button>
+                    @endif
+                    @if(in_array(Auth::user()->role, [1, 2, 3])) {{-- Role Keuangan --}}
                     <button type="button" class="btn btn-info text-white shadow-sm px-3" data-bs-toggle="modal" data-bs-target="#addReportKeu">
                         <i class='bx bx-check-double me-1'></i> Realisasi
                     </button>

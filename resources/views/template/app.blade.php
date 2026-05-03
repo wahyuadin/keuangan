@@ -72,6 +72,29 @@ $user = json_decode(Cookie::get('user_data'), true);
             <!-- Layout container -->
             <div class="layout-page">
                 <!-- Navbar -->
+                @php
+                $notif = \App\Models\Notification::where('is_active', true)->get();
+                @endphp
+                @if($notif->isNotEmpty())
+                <div class="container mt-3">
+                        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-start" role="alert">
+
+                            <!-- Icon -->
+                            <i class="bx bx-bell fs-3 me-3"></i>
+
+                            <!-- Content -->
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1 fw-bold">{{ $notif->first()->title }}</h6>
+                                <p class="mb-0">
+                                    {{ $notif->first()->message }}
+                                </p>
+                            </div>
+
+                            <!-- Close button -->
+                            <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                @endif
                 @include('template.sections.navbar')
                 <!-- / Navbar -->
 

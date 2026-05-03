@@ -67,12 +67,12 @@
                     </div>
                     @elseif(Auth::user()->role == '0')
                     <div class="mb-3 clinic-field clinic-field-{{ Auth::user()->id }}">
-                        <label class="form-label">Perusahaan</label>
+                        <label class="form-label">Cabang</label>
                         <select name="nama_perusahaan" class="form-control" disabled>
                             <option disabled selected>== Pilih Salah Satu ==</option>
-                            @foreach(App\Models\Customer::where('id', Auth::user()->customer_id)->get() as $c)
-                            <option value="{{ $c->id }}" {{ Auth::user()->customer_id == $c->id ? 'selected' : '' }}>
-                                {{ $c->nama_perusahaan }}
+                            @foreach(App\Models\BranchOffice::where('id', Auth::user()->branch_id)->get() as $c)
+                            <option value="{{ $c->id }}" {{ Auth::user()->branch_id == $c->id ? 'selected' : '' }}>
+                                {{ $c->nama_branch ?? '-' }}
                             </option>
                             @endforeach
                         </select>

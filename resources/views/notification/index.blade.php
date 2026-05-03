@@ -11,14 +11,18 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-6 col-md-8">
-                    <h5 class="card-title">Add/Edit Benefit Service Level Agreement</h5>
+                    <h5 class="card-title">Data Notifikasi</h5>
                 </div>
             </div>
             <div class="table-responsive mt-3">
                 <div class="mt-3 mb-4">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSla">
-                        <i class='bx bx-plus'></i>
-                    </button>
+                    @if($data->isEmpty())
+                        @if(Auth::user()->role == '2')
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNotification">
+                            <i class='bx bx-plus'></i>
+                        </button>
+                        @endif
+                    @endif
                     <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class='bx bx-export'></i>
                     </button>
@@ -37,45 +41,52 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Item</th>
-                            <th>Kategori</th>
-                            <th>Klinik</th>
-                            <th>Branch Office</th>
-                            <th>Penetapan RKAP</th>
-                            <th>Tahun</th>
-                            <th>Update By</th>
-                            <th>Created At</th>
+                            <th>Judul</th>
+                            <th>Deskripsi</th>
+                            <th>Is Active</th>
+                            <th>Updated By</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data as $index => $dataItem)
                         <tr>
-                            {{-- @dump($dataItem) --}}
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ Str::upper($dataItem->item->item ?? '-') }}</td>
-                            <td>{{ Str::upper($dataItem->item->kategori->kategori ?? '-') }}</td>
-                            <td>{{ Str::upper($dataItem->klinik->nama_klinik ?? '-') }}</td>
-                            <td>{{ Str::upper($dataItem->klinik->branch->nama_branch ?? '-') }}</td>
-                            <td>{{ 'Rp ' . number_format($dataItem->rkap ?? 0, 0, ',', '.') }}</td>
-                            <td>{{ $dataItem->tahun ?? '-' }}</td>
+                            <td>{{ $dataItem->title ?? '-' }}</td>
+                            <td>{{ $dataItem->message ?? '-' }}</td>
+                            <td>
+                                @if($dataItem->is_active)
+                                    <span class="badge bg-success">Active</span>
+                                @else
+                                    <span class="badge bg-danger">Inactive</span>
+                                @endif
+                            </td>
                             @php
-                            $user = \App\Models\User::where('id', $dataItem->create_by)->first();
+                            $user =\App\Models\User::where('id' , $dataItem->create_by)->first();
                             @endphp
-                            <td>{{ Str::upper($user->nama ?? '-') }}</td>
-                            <td>{{ Str::upper($dataItem->updated_at ?? '-') }}</td>
+                            <td>{{ Str::upper($user->nama ?? '-') ?? '-' }}</td>
+                            @if(Auth::user()->role == '2')
                             <td>
                                 <div class="d-flex gap-1">
-                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editSla{{ $dataItem->id }}">
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editNotificasi{{ $dataItem->id }}">
                                         Edit
                                     </button>
-                                    @if(in_array(Auth::user()->role, [2, 3]))
-                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSla{{ $dataItem->id }}">
+                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteNotificasi{{ $dataItem->id }}">
                                         Delete
                                     </button>
-                                    @endif
                                 </div>
                             </td>
+                            @else
+                            <td>
+                                @if(Auth::user()->clinic_id == $dataItem->id)
+                                <div class="d-flex gap-1">
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editNotificasi{{ $dataItem->id }}">
+                                        Edit
+                                    </button>
+                                </div>
+                                @endif
+                            </td>
+                            @endif
                         </tr>
                         @endforeach
                     </tbody>
@@ -84,9 +95,9 @@
         </div>
     </div>
 </div>
-@include('sla.modal.add')
-@include('sla.modal.edit')
-@include('sla.modal.delete')
+@include('notification.modal.add')
+@include('notification.modal.edit')
+@include('notification.modal.delete')
 @push('style')
 {{-- datatable --}}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.6/css/dataTables.bootstrap5.css">
@@ -114,11 +125,10 @@
 
     $('.select2').each(function() {
         $(this).select2({
-            placeholder: "Cari atau pilih item..."
+            placeholder: "Cari atau pilih peserta..."
             , theme: "bootstrap-5"
             , allowClear: true
-            , dropdownParent: $(this).closest('.modal').length ?
-                $(this).closest('.modal') : $(document.body)
+            , dropdownParent: $(this).closest('.modal')
         });
     });
 

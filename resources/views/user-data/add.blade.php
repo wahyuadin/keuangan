@@ -52,12 +52,12 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="email" class="form-label">Role <span class="text-danger">*</span></label>
-                                <select name="role" class="form-select" id="roleSelect">
+                                <label for="role" class="form-label">Role <span class="text-danger">*</span></label>
+                                <select name="role" class="form-select">
                                     <option selected disabled>== Pilih Role ==</option>
-                                    <option value="0" {{ old('role') == 0 ? 'selected' : '' }}>HRD</option>
-                                    <option value="1" {{ old('role') == 1 ? 'selected' : '' }}>Admin Klinik</option>
-                                    <option value="2" {{ old('role') == 2 ? 'selected' : '' }}>Super Admin</option>
+                                    <option value="0" {{ old('role') == 0 ? 'selected' : '' }}>HUB PPK</option>
+                                    <option value="1" {{ old('role') == 1 ? 'selected' : '' }}>Keuangan Cabang</option>
+                                    <option value="2" {{ old('role') == 2 ? 'selected' : '' }}>Keuangan Pusat</option>
                                 </select>
                             </div>
                         </div>
@@ -66,42 +66,24 @@
                                 <label for="email" class="form-label">Is Active <span class="text-danger">*</span></label>
                                 <select name="is_active" class="form-select">
                                     <option disabled selected>== Pilih Status ==</option>
-                                    <option value="1" {{ old('is_active') == 1 ? 'selected' : '' }}>Aktif</option>
-                                    <option value="0" {{ old('is_active') == 0 ? 'selected' : '' }}>Tidak Aktif
+                                    <option value="1" selected>Aktif</option>
+                                    <option value="0">Tidak Aktif
                                     </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-12" id="perusahaanfield">
-                            <div class="mb-3">
-                                <label for="customer" class="form-label">Perusahaan <span class="text-danger">*</span></label>
-                                <select name="customer_id" class="form-select select2">
-                                    <option selected disabled>== Pilih Salah Satu ==</option>
-                                    @php
-                                    $customer = App\Models\Customer::all();
-                                    foreach ($customer as $c) {
-                                    echo '<option value="' .
-                                                $c->id .
-                                                '" ' .
-                                                ($c->id == old(' customer_id') ? 'selected' : '' ) . '>' . $c->nama_perusahaan .
-                                        '</option>';
-                                    }
-                                    @endphp
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-12" id="clinicfield">
                             <div class="mb-3">
-                                <label for="clinic_id" class="form-label">Klinik <span class="text-danger">*</span></label>
-                                <select name="clinic_id" class="form-select select2">
+                                <label for="branch_id" class="form-label">Branch Office <span class="text-danger">*</span></label>
+                                <select name="branch_id" class="form-select select2">
                                     <option selected disabled>== Pilih Salah Satu ==</option>
                                     @php
-                                    $clinic = App\Models\Clinic::all();
-                                    foreach ($clinic as $c) {
+                                    $branchOffices = App\Models\BranchOffice::all();
+                                    foreach ($branchOffices as $c) {
                                     echo '<option value="' .
                                                 $c->id .
                                                 '" ' .
-                                                ($c->id == old(' clinic_id') ? 'selected' : '' ) . '>' . $c->nama_klinik .
+                                                ($c->id == old('branch_id') ? 'selected' : '' ) . '>' . $c->nama_branch .
                                         '</option>';
                                     }
                                     @endphp

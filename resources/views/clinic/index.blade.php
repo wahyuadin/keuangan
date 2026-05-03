@@ -16,7 +16,7 @@
             </div>
             <div class="table-responsive mt-3">
                 <div class="mt-3 mb-4">
-                    @if(Auth::user()->role == '2')
+                    @if(in_array(Auth::user()->role, [0, 2, 3])) {{-- Role PPK / HUB / Superadmin --}}
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClinic">
                         <i class='bx bx-plus'></i>
                     </button>
@@ -61,28 +61,18 @@
                             $user =\App\Models\User::where('id' , $dataItem->create_by)->first();
                             @endphp
                             <td>{{ Str::upper($user->nama ?? '-') ?? '-' }}</td>
-                            @if(Auth::user()->role == '2')
                             <td>
                                 <div class="d-flex gap-1">
                                     <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editclinic{{ $dataItem->id }}">
                                         Edit
                                     </button>
+                                    @if(in_array(Auth::user()->role, [2, 3])) {{-- Role Keuangan Ho / Superadmin --}}
                                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteclinic{{ $dataItem->id }}">
                                         Delete
                                     </button>
+                                    @endif
                                 </div>
                             </td>
-                            @else
-                            <td>
-                                @if(Auth::user()->clinic_id == $dataItem->id)
-                                <div class="d-flex gap-1">
-                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editclinic{{ $dataItem->id }}">
-                                        Edit
-                                    </button>
-                                </div>
-                                @endif
-                            </td>
-                            @endif
                         </tr>
                         @endforeach
                     </tbody>

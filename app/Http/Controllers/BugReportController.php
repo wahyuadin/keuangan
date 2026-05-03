@@ -2,24 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Services\UserService;
+use App\Models\BugReport;
+use App\Services\BugReportService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class UserDataController extends Controller
+class BugReportController extends Controller
 {
-    protected $user;
+    protected $bug;
 
-    public function __construct(UserService $user)
+    public function __construct(BugReportService $bug)
     {
-        $this->user = $user;
+        $this->bug = $bug;
     }
 
     public function index()
     {
-        return view('user-data.index', [
-            'data' => User::showData(),
-        ]);
+        if (Auth::user()->role != 2) {
+            return view('bug-report.index', ['data' => BugReport::showData(Auth::user()->id)]);
+        }
+        return view('bug-report.index', ['data' => BugReport::showData()]);
     }
 
     /**
@@ -35,8 +37,7 @@ class UserDataController extends Controller
      */
     public function store(Request $request)
     {
-        $this->user->tambah($request);
-        return redirect()->back();
+        return $this->bug->tambah($request);
     }
 
     /**
@@ -68,7 +69,16 @@ class UserDataController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->user->hapus($id);
-        return redirect()->back();
+        return $this->bug->hapus($id);
+    }
+
+    public function accept($id)
+    {
+        return $this->bug->accept($id);
+    }
+
+    public function reject($id)
+    {
+        return $this->bug->reject($id);
     }
 }

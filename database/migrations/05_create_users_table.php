@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            // $table->foreignUuid('branch_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignUuid('branch_id')->nullable()->constrained('branchoffices')->nullOnDelete();
             $table->string('username')->unique();
             $table->enum('is_active', ['0', '1'])->default('1');
-            $table->enum('role', ['0', '1', '2'])->default('0'); // 0 hub_ppk 1 keuangan 2 superadmin
+            $table->enum('role', ['0', '1', '2', '3'])->default('0'); // 0 hub_ppk branch 1 keuangan branch 2 keuangan ho 3 superadmin
             $table->string('avatar')->default('default.png');
             $table->string('nama');
             $table->string('email')->unique();

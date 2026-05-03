@@ -25,24 +25,14 @@ class User extends Authenticatable implements Auditable
         'restored',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+    public function branch()
+    {
+        return $this->belongsTo(Branchoffice::class, 'branch_id');
+    }
 
     public static function showData($id = null)
     {
-        return $id ? self::find($id)->first() : self::latest()->get();
+        return $id ? self::with('branch')->find($id) : self::with('branch')->latest()->get();
     }
 
     public static function tambahData($data)
