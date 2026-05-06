@@ -39,7 +39,7 @@ class Sla extends Model implements Auditable
 
     public static function tambahData($data)
     {
-        return self::create($data);
+        return self::updateOrCreate($data);
     }
 
     public static function editData($id, $data)

@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('slas', function (Blueprint $table) {
+            $table->unique(['item_id', 'clinic_id', 'tahun']);
             $table->uuid('id')->primary();
             $table->foreignUuid('item_id')->nullable()->constrained('items')->nullOnDelete();
             $table->foreignUuid('clinic_id')->nullable()->constrained('clinics')->nullOnDelete();
@@ -20,6 +21,8 @@ return new class extends Migration
             $table->text('create_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
+
+            $table->unique(['item_id', 'clinic_id', 'tahun', 'deleted_at']);
         });
     }
 
