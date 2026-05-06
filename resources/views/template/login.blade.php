@@ -151,7 +151,7 @@
                 <div class="mb-8">
                     <h2 class="text-3xl font-bold text-slate-900 mb-2">Selamat Datang</h2>
                     {{-- <p class="text-slate-500">Silakan masuk ke akun Anda untuk memulai.</p> --}}
-                    <p class="text-slate-500"><i>STAGGING MODE</i></p>
+                    <p class="text-slate-500"><i>Masa Percobaan - Staging Mode</i></p>
                 </div>
 
                 <!-- Form -->
