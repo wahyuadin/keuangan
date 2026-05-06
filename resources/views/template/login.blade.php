@@ -114,7 +114,7 @@
                 <div class="mb-6 flex items-center gap-3">
                     <span class="text-2xl font-bold tracking-wide">PT. NAYAKA ERA HUSADA</span>
                 </div>
-                <h1 class="text-5xl font-bold mb-6 leading-tight">KONSOLIDASI <br /> <span class="text-brand-100">HUB PPK DAN KEUANGAN (STAGGING MODE)</span></h1>
+                <h1 class="text-5xl font-bold mb-6 leading-tight">KONSOLIDASI <br /> <span class="text-brand-100">HUB PPK DAN KEUANGAN</span></h1>
                 <p class="text-lg text-brand-100 mb-8 max-w-lg">
                     Memberikan pelayanan kesehatan terbaik dengan dukungan teknologi informasi yang handal, cepat, dan akurat.
                 </p>
@@ -150,7 +150,8 @@
                 <!-- Header -->
                 <div class="mb-8">
                     <h2 class="text-3xl font-bold text-slate-900 mb-2">Selamat Datang</h2>
-                    <p class="text-slate-500">Silakan masuk ke akun Anda untuk memulai.</p>
+                    {{-- <p class="text-slate-500">Silakan masuk ke akun Anda untuk memulai.</p> --}}
+                    <p class="text-slate-500"><i>STAGGING MODE</i></p>
                 </div>
 
                 <!-- Form -->
