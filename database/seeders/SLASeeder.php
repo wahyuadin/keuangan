@@ -6,6 +6,7 @@ use App\Models\Report;
 use App\Models\Sla;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class SLASeeder extends Seeder
@@ -115,12 +116,14 @@ class SLASeeder extends Seeder
 
         DB::beginTransaction();
         try {
-            $data['create_by'] = NULL;
-            $dataSLA = Sla::tambahData($data);
-            $this->syncMonthlyReport($dataSLA);
-
+            foreach ($data as $row) {
+                $sla = Sla::tambahData($row);
+                $this->syncMonthlyReport($sla);
+            }
+            Log::info('SLASeeder: Data SLA berhasil ditambahkan dan laporan bulanan disinkronkan.');
             DB::commit();
         } catch (\Throwable $th) {
+            Log::error($th->getMessage());
             DB::rollback();
         }
     }
